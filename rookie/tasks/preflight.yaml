@@ -1,0 +1,26 @@
+---
+- name: "preflight: Is `ansible_controller_addresses` defined?"
+  assert:
+    that:
+      - ansible_controller_addresses is defined
+    fail_msg: "Controller node addresses must be defined. Provide value for `ansible_controller_addresses` in your preffered way."
+
+- name: "preflight: Initialize `ansible_controller_addresses` to current host addresses"
+  ansible.builtin.set_fact:
+    ansible_controller_addresses: "{{ ansible_facts['all_ipv4_addresses'] }}"
+  when: ansible_controller_addresses is undefined
+
+- name: "preflight: Is `ansible_controller_addresses` a list?"
+  assert:
+    that:
+      - ansible_controller_addresses is iterable
+      - ( ansible_controller_addresses is string ) is false
+    fail_msg: "`ansible_controller_addresses` must be defined as a list, even if it contains a single element."
+  when: ansible_controller_addresses is defined
+
+- name: "preflight: Gather `~/.ssh/id_*.pub` content"
+  ansible.builtin.command:
+    cmd: "cat {{ item }}"
+  with_fileglob: "~/.ssh/id_*.pub"
+  register: pub_ids
+...

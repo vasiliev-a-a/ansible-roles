@@ -1,0 +1,8 @@
+---
+ansible_become_pass: "{{ ansible_password}}"
+ansible_account_user: "ansible"
+ansible_account_group: "users"
+ansible_account_uid: 1991
+ansible_account_home: "/home/{{ ansible_account_user }}"
+authorized_keys_extra: []
+...
