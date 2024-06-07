@@ -1,0 +1,8 @@
+[realms]
+        {{ ansible_domain | upper }} = {
+                default_domain = {{ ansible_domain }}
+        }
+
+[domain_realm]
+        .{{ ansible_domain }} = {{ ansible_domain | upper }}
+        {{ ansible_domain }} = {{ ansible_domain | upper }}

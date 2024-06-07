@@ -1,0 +1,21 @@
+---
+- import_tasks: preflight.yaml
+
+- name: "Include OS specific variables"
+  include_vars:
+    file: "{{ ansible_os_family | lower }}.yaml"
+  tags: [always]
+
+- import_tasks: packages.yaml
+  become: true
+
+- import_tasks: join.yaml
+  become: true
+
+- import_tasks: config.yaml
+  become: true
+
+- import_tasks: undo.yaml
+  become: true
+  tags: [never, undo]
+...

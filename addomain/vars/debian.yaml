@@ -1,0 +1,13 @@
+---
+packages_install:
+  - sssd
+  - sssd-common
+  - sssd-ad-common
+  - sssd-krb5-common
+  - samba-common
+  - samba-common-bin
+  - krb5-config
+  - krb5-user
+pam_mkhomedir_module: "pam_mkhomedir.so"
+sssd_service: "sssd.service"
+...

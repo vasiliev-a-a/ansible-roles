@@ -1,0 +1,33 @@
+[sssd]
+debug_level = 4
+debug_timestamps = true
+enable_files_domain = true
+services = nss, pam
+domains = {{ ansible_domain | upper }}
+[nss]
+debug_level = 4
+debug_timestamps = true
+override_homedir = /home/%f
+override_shell = /bin/bash
+[pam]
+debug_level = 4
+debug_timestamps = true
+pam_verbosity = 3
+pam_id_timeout = 30
+pam_account_expired_message = Account has expired
+pam_account_locked_message = Account is locked
+[domain/{{ ansible_domain | upper }}]
+debug_level = 4
+debug_timestamps = true
+enumerate = false
+entry_cache_timeout = 1800
+refresh_expired_interval = 1500
+cache_credentials = true
+account_cache_expiration = 5
+id_provider = ad
+auth_provider = ad
+access_provider = simple
+simple_allow_groups = {{ admins | join(',')}}
+chpass_provider = ad
+lookup_family_order = ipv4_only
+ad_hostname = {{ ansible_fqdn }}

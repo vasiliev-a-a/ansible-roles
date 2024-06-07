@@ -1,0 +1,14 @@
+---
+admins:
+ - "Администраторы домена"
+ - "Domain Admins"
+samba_config_file: "/etc/samba/smb.conf"
+samba_config_directory: "/etc/samba"
+samba_config_snippet: "{{ samba_config_directory }}/{{ snippet_name }}.conf"
+krb5_config_file: "/etc/krb5.conf"
+krb5_config_directory: "/etc/krb5.conf.d"
+krb5_config_snippet: "{{ krb5_config_directory }}/{{ snippet_name }}"
+sssd_config_file: "/etc/sssd/sssd.conf"
+sssd_config_directory: "/etc/sssd/sssd.conf.d"
+sssd_config_snippet: "{{ sssd_config_directory }}/{{ snippet_name }}"
+...

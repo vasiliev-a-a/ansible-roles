@@ -1,0 +1,39 @@
+---
+- name: "config: Generate SSSD service configuration file"
+  ansible.builtin.template:
+    backup: yes
+    src: "./sssd.j2"
+    dest: "{{ sssd_config_file }}"
+    mode: "0600"
+  notify: "restart sssd"
+
+- name: "config: Create logrotate configuration snippet"
+  ansible.builtin.template:
+    backup: true
+    src: "./logrotate.j2"
+    dest: "{{ logrotate_config_snippet }}"
+  when:
+  - stat_logrotate_config_file['stat']['exists']
+  - stat_logrotate_config_directory['stat']['exists']
+
+- name: "config: Enable PAM mkhomedir"
+  ansible.builtin.lineinfile:
+    backup: yes
+    line: "session optional {{ pam_mkhomedir_module }} umask=0077"
+    path: "{{ pam_common_session_file }}"
+    regexp: '^session[\ \t]+.*{{ pam_mkhomedir_module }}.*'
+
+- name: "config: Create sudoers configuration snippet"
+  ansible.builtin.template:
+    backup: true
+    src: "./sudoers.j2"
+    dest: "{{ sudoers_config_snippet }}"
+    mode: 0440
+    validate: /usr/sbin/visudo -csf %s
+
+- name: "config: Enable SSSD service"
+  ansible.builtin.service:
+    name: "{{ sssd_service }}"
+    enabled: yes
+  when: ansible_check_mode == false
+...
