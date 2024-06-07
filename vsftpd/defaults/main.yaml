@@ -1,0 +1,21 @@
+---
+ftp_root: "/srv/ftproot"
+ftp_user:
+  name: ftp-user
+  uid: 200
+ftp_group:
+  name: ftp-users
+  gid: 200
+vsftpd_listen_port: 21
+vsftpd_pasv_min_port: 10000
+vsftpd_pasv_max_port: 12000
+vsftpd_log_file: "/var/log/vsftpd.log"
+vsftpd_xferlog_file: "/var/log/xferlog"
+vsftpd_config_file: "/etc/vsftpd.conf"
+vsftpd_config_directory: "/etc/vsftpd.conf.d"
+vsftpd_rsa_cert_file: "{{ vsftpd_config_directory }}/cert.pem"
+vsftpd_rsa_cert: |
+  -----CERTIFICATE CONTENT HERE----
+vsftpd_config_extra: |
+vsftpd_rsyslog_extra: |
+...

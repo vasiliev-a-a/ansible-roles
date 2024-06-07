@@ -1,0 +1,42 @@
+---
+- name: "directories: Create configuration directory"
+  ansible.builtin.file:
+    path: "{{ vsftpd_config_directory }}"
+    state: directory
+    mode: "0750"
+
+- name: "directories: Create FTP root folder"
+  ansible.builtin.file:
+    path: "{{ ftp_root }}"
+    state: directory
+    mode: "0750"
+    owner: root
+    group: "{{ ftp_group['name'] }}"
+  when: ansible_check_mode == false
+
+- name: "directories: Create per `ftp_users` chroot directory"
+  ansible.builtin.file:
+    path: "{{ ftp_root }}/{{ item['name'] }}"
+    state: directory
+    mode: "2770"
+    owner: "{{ item['name']}}"
+    group: "{{ item['name']}}"
+  loop: "{{ ftp_users | selectattr('role','equalto','user') }}"
+  when: ansible_check_mode == false
+
+- name: "directories: Enforce Chroot and SFTP for members of {{ ftp_group['name'] }}"
+  ansible.builtin.blockinfile:
+    backup: true
+    block: |
+      Match User {{ ftp_users | map(attribute='name') | join(',') }}
+      ChrootDirectory {{ ftp_root }}
+      ForceCommand internal-sftp -d /%u
+      AllowTcpForwarding no
+      AllowAgentForwarding no
+      X11Forwarding no
+      PermitTunnel no
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: origin={{ snippet_name }}"
+    insertafter: EOF
+    path: "{{ sshd_config_file }}"
+  notify: "restart sshd"
+...
