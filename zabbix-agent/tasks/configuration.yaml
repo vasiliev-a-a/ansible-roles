@@ -1,0 +1,77 @@
+---
+- name: "configuration: Create Zabbix Agent user group"
+  ansible.builtin.group:
+    name: "{{ zabbix_agent_group }}"
+    state: "present"
+
+- name: "configuration: Create Zabbix Agent user account"
+  ansible.builtin.user:
+    name: "{{ zabbix_agent_user }}"
+    state: "present"
+    create_home: false
+    group: "{{ zabbix_agent_group }}"
+    password_lock: true
+
+- name: "configuration: Ensure that the log path exists"
+  ansible.builtin.file:
+    path: "{{ zabbix_agent_log_file | dirname }}"
+    mode: 0755
+    owner: "{{ zabbix_agent_user }}"
+    group: "{{ zabbix_agent_group }}"
+    state: directory
+  when: ansible_check_mode == false
+
+- name: "configuration: Ensure that the drop-in configuration directory exists"
+  ansible.builtin.file:
+    path: "{{ zabbix_agent_config_directory }}"
+    mode: 0755
+    owner: root
+    group: root
+    state: directory
+
+- name: "configuration: Include the drop-in directory into the main configuration file"
+  ansible.builtin.lineinfile:
+    backup: true
+    create: true
+    insertafter: EOF
+    line: "Include={{ zabbix_agent_config_directory }}/*.conf"
+    path: "{{ zabbix_agent_config_file }}"
+    regexp: "^[Ii]nclude={{ zabbix_agent_config_directory }}/*.conf"
+    validate: "zabbix_agentd -c %s -t agent.hostname"
+
+- name: "configuration: Create configuration snippet"
+  ansible.builtin.template:
+    backup: true
+    dest: "{{ zabbix_agent_config_snippet }}"
+    src: "config.j2"
+    mode: "0644"
+    validate: "zabbix_agentd -c %s -t agent.hostname"
+  notify: "restart zabbix-agent"
+
+- name: "configuration: Create logrotate configuration snippet"
+  ansible.builtin.template:
+    backup: true
+    src: "logrotate.j2"
+    dest: "{{ logrotate_config_snippet }}"
+    mode: "0644"
+    validate: "logrotate -d %s"
+  when:
+  - stat_logrotate_config_file['stat']['exists']
+  - stat_logrotate_config_directory['stat']['exists']
+
+- name: "configuration: Create sudoers configuration snippet"
+  ansible.builtin.copy:
+    backup: true
+    dest: "{{ sudoers_config_snippet }}"
+    owner: "root"
+    group: "root"
+    mode: 0440
+    content: |
+      Defaults: {{ zabbix_agent_user }} !requiretty
+      {{ zabbix_agent_user }} ALL=(ALL) NOPASSWD: ALL
+    validate: /usr/sbin/visudo -csf %s
+  when:
+  - zabbix_agent_remote_commands
+  - stat_sudoers_config_file['stat']['exists']
+  - stat_sudoers_config_directory['stat']['exists']
+...

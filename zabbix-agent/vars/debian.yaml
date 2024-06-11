@@ -1,0 +1,5 @@
+---
+packages_install:
+  - zabbix-agent
+zabbix_agent_service: "zabbix-agent.service"
+...

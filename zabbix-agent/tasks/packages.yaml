@@ -1,0 +1,8 @@
+---
+- name: "packages: Install packages (Debian)"
+  ansible.builtin.apt:
+    name: "{{ packages_install }}"
+    state: present
+    update_cache: true
+  when: (ansible_os_family | lower) == 'debian'
+...
