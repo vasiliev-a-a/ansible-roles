@@ -1,0 +1,6 @@
+---
+snippet: "{{ snippet_prefix }}-{{ ansible_role_name }}"
+sudoers_snippet: "{{ sudoers_config_directory }}{{ snippet }}"
+samba_snippet: "{{ samba_config_directory }}{{ snippet }}"
+krb5_snippet: "{{ krb5_config_directory }}{{ snippet }}"
+...

@@ -1,0 +1,6 @@
+---
+sshd_service: "sshd.service"
+rsyslog_service: "rsyslog.service"
+pam_umask_module: "pam_umask.so"
+pam_mkhomedir_module: "pam_mkhomedir.so"
+...

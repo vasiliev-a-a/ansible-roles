@@ -1,0 +1,9 @@
+---
+snippet_prefix: 501
+sudoers_config_directory: "/etc/sudoers.d/"
+pam_common_session_file: "/etc/pam.d/common-session"
+samba_config_file: "/etc/samba/smb.conf"
+samba_config_directory: "/etc/samba/"
+krb5_config_file: "/etc/krb5.conf"
+krb5_config_directory: "/etc/krb5.conf.d/"
+...

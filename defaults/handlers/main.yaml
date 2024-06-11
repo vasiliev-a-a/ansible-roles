@@ -1,0 +1,15 @@
+---
+- name: "services: Reload OpenSSH Server"
+  become: true
+  ansible.builtin.service:
+    name: "{{ sshd_service }}"
+    state: reloaded
+  listen: "reload sshd"
+
+- name: "services: Restart Rsyslog service"
+  become: true
+  ansible.builtin.service:
+    name: "{{ rsyslog_service }}"
+    state: restarted
+  listen: "restart rsyslog"
+...
