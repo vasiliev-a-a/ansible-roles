@@ -1,0 +1,25 @@
+---
+- name: "Reload OpenSSH Server"
+  become: true
+  ansible.builtin.service:
+    name: "{{ sshd_service }}"
+    state: reloaded
+  listen: "reload sshd"
+  when: ansible_check_mode == false
+
+- name: "Restart OpenSSH Server"
+  become: true
+  ansible.builtin.service:
+    name: "{{ sshd_service }}"
+    state: restarted
+  listen: "restart sshd"
+  when: ansible_check_mode == false
+
+- name: "Restart Rsyslog service"
+  become: true
+  ansible.builtin.service:
+    name: "{{ rsyslog_service }}"
+    state: restarted
+  listen: "restart rsyslog"
+  when: ansible_check_mode == false
+...

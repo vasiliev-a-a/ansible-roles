@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  description: |
+    A meta role acting as a central store of common variables.
+    It may be included as a dependency into another roles.
+dependencies: []
+...
