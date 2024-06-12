@@ -1,0 +1,3 @@
+---
+snippet_name: "{{ snippet_prefix }}-{{ ansible_role_name | default('defaults')}}"
+...
