@@ -34,15 +34,13 @@
     owner: "{{ ansible_account_user }}"
 
 - name: "account: Set up `~/.ssh/auhtorized_keys`"
+  vars:
+    pub_ids: "{{ lookup('pipe','cat ~/.ssh/id_*.pub') | default('') }}"
   ansible.builtin.blockinfile:
     backup: true
     block: |
-      {% if pub_ids.results is defined %}
-      {% for result in pub_ids.results %}
-      {% if result.skipped is not defined and not result.failed %}
-      {{ result.stdout }}
-      {% endif %}
-      {% endfor %}
+      {% if pub_ids | length > 1 %}
+      {{ pub_ids }}
       {% endif %}
       {% for key in authorized_keys_extra %}
       {{ key }}

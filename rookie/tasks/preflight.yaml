@@ -17,10 +17,4 @@
       - ( ansible_controller_addresses is string ) is false
     fail_msg: "`ansible_controller_addresses` must be defined as a list, even if it contains a single element."
   when: ansible_controller_addresses is defined
-
-- name: "preflight: Gather `~/.ssh/id_*.pub` content"
-  ansible.builtin.command:
-    cmd: "cat {{ item }}"
-  with_fileglob: "~/.ssh/id_*.pub"
-  register: pub_ids
 ...
