@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  description: |
+    This role joins hosts to an Active Directory Domain.
+dependencies:
+- role: defaults
+...

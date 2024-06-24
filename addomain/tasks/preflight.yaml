@@ -1,0 +1,43 @@
+---
+- name: "preflight: Is `join_user` defined?"
+  assert:
+    that:
+      - join_user is defined
+    fail_msg: "`join_user` must be provided."
+  delegate_to: localhost
+  run_once: true
+
+- name: "preflight: Is `join_pass` defined?"
+  assert:
+    that:
+      - join_pass is defined
+    fail_msg: "`join_pass` must be provided."
+  delegate_to: localhost
+  run_once: true
+
+- name: "preflight: Is `ansible_domain` defined?"
+  assert:
+    that:
+      - ansible_domain is defined
+      - ansible_domain is string
+    fail_msg: "`ansible_domain` is not defined. Host must be configured with FQDN of the target domain."
+
+- name: "preflight: Is `admins` a list?"
+  assert:
+    that:
+      - admins is iterable
+      - ( admins is string ) is false
+    fail_msg: "`admins` must be defined as a list of strings, even if it contains a single element."
+  delegate_to: localhost
+  run_once: true
+
+- name: "preflight: Does `{{ samba_config_directory }}` exist?"
+  stat:
+    path: "{{ samba_config_directory }}"
+  register: stat_samba_config_directory
+
+- name: "preflight: Does `{{ krb5_config_directory }}` exist?"
+  stat:
+    path: "{{ krb5_config_directory }}"
+  register: stat_krb5_config_directory
+...

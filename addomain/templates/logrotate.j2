@@ -1,0 +1,5 @@
+/var/log/sssd/*.log {
+        postrotate
+                kill -HUP `cat /var/run/sssd.pid` > /dev/null 2>&1 || true
+        endscript
+}
