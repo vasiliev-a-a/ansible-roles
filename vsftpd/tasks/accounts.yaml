@@ -1,0 +1,58 @@
+---
+- name: "accounts: Enable PAM umask"
+  ansible.builtin.lineinfile:
+    backup: true
+    line: "session optional {{ pam_umask_module }}"
+    path: "{{ pam_common_session_file }}"
+    regexp: '^session[\ \t]+.*{{ pam_umask_module }}.*'
+
+- name: "accounts: Create {{ ftp_group['name'] }} group"
+  ansible.builtin.group:
+    name: "{{ ftp_group['name'] }}"
+    state: present
+    gid: "{{ ftp_group['gid'] }}"
+
+- name: "accounts: Create {{ ftp_user['name'] }} account"
+  ansible.builtin.user:
+    comment: "vsftpd service account"
+    name: "{{ ftp_user['name'] }}"
+    uid: "{{ ftp_user['uid'] }}"
+    group: "{{ ftp_group['name']}}"
+    password_lock: true
+    shell: "/bin/bash"
+    home: "{{ ftp_root }}"
+    create_home: no
+
+- name: "accounts: Create groups for `ftp_users`"
+  ansible.builtin.group:
+    name: "{{ item['name'] }}"
+    state: present
+    gid: "{{ item['id'] }}"
+  loop: "{{ ftp_users }}"
+
+- name: "accounts: Create regular accounts for `ftp_users`"
+  ansible.builtin.user:
+    name: "{{ item['name'] }}"
+    uid: "{{ item['id'] }}"
+    group: "{{ item['name']}}"
+    groups: "{{ ftp_group['name']}}"
+    password: "{{ item['password'] | password_hash('sha512') }}"
+    shell: "/bin/bash"
+    home: "{{ ftp_root }}/{{ item['name'] }}"
+    comment: ",,,,umask=0007"
+    create_home: no
+  loop: "{{ ftp_users | selectattr('role','equalto','user') }}"
+
+- name: "accounts: Create admin accounts for `ftp_users`"
+  ansible.builtin.user:
+    name: "{{ item['name'] }}"
+    uid: "{{ item['id'] }}"
+    group: "{{ item['name']}}"
+    groups: "{{ ftp_users | map(attribute='name') | join(',') }},{{ ftp_group['name'] }}"
+    password: "{{ item['password'] | password_hash('sha512') }}"
+    shell: "/bin/bash"
+    home: "{{ ftp_root }}"
+    comment: ",,,,umask=0007"
+    create_home: no
+  loop: "{{ ftp_users | selectattr('role','equalto','admin') }}"
+...

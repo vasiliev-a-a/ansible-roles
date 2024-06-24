@@ -1,0 +1,45 @@
+listen=YES
+listen_ipv6=NO
+listen_address=0.0.0.0
+listen_port={{ vsftpd_listen_port }}
+max_clients=500
+port_enable=NO
+pasv_min_port={{ vsftpd_pasv_min_port }}
+pasv_max_port={{ vsftpd_pasv_max_port }}
+accept_timeout=30
+connect_timeout=30
+data_connection_timeout=120
+idle_session_timeout=300
+delay_failed_login=5
+anonymous_enable=NO
+guest_enable=NO
+local_enable=YES
+write_enable=YES
+local_umask=0007
+{% if ssl_result['failed'] is false %}
+force_local_logins_ssl=no
+force_local_data_ssl=no
+ssl_enable=yes
+rsa_cert_file={{ vsftpd_rsa_cert_file }}
+{% endif %}
+allow_writeable_chroot=YES
+chroot_local_user=YES
+local_root={{ ftp_root }}
+user_config_dir={{ vsftpd_config_directory }}
+text_userdb_names=YES
+use_localtime=YES
+cmds_denied=MFF,MFCT,MFMT
+secure_chroot_dir=/var/run/vsftpd/empty
+delay_failed_login=5
+max_login_fails=3
+syslog_enable=NO
+xferlog_enable=YES
+xferlog_file={{ vsftpd_xferlog_file }}
+xferlog_std_format=YES
+log_ftp_protocol=NO
+vsftpd_log_file={{ vsftpd_log_file }}
+dual_log_enable=YES
+seccomp_sandbox=NO
+{% if vsftpd_config_extra is defined %}
+{{ vsftpd_config_extra }}
+{% endif %}
