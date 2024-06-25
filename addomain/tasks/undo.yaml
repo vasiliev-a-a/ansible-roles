@@ -16,15 +16,6 @@
       - ansible_check_mode == false
       - leave_results['failed']
 
-- name: "undo: Uninstall packages (Debian)"
-  ansible.builtin.apt:
-    name: "{{ packages_install }}"
-    state: absent
-    update_cache: no
-    purge: true
-  when:
-    - (ansible_os_family | lower) == 'debian'
-
 - name: "undo: Exclude krb5 config snippet from the main config"
   ansible.builtin.blockinfile:
     backup: true

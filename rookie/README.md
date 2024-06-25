@@ -17,7 +17,7 @@ This role brings new hosts (rookies) under control of Ansible:
 
 ## Dependencies
 
-- `defaults`: to import common variables and handlers.
+- `defaults` - to import common variables and handlers.
 
 ## Role Variables
 

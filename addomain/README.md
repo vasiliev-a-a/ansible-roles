@@ -1,5 +1,4 @@
-Role `addomain`
-=========
+# Role `addomain`
 
 This role joins hosts to an Active Directory Domain:
 
@@ -11,15 +10,17 @@ This role joins hosts to an Active Directory Domain:
 3. It invokes `net ads join` command.
 4. It sets up _sssd.conf_ to serve NSS and PAM lookups from AD domain.
 
-Limitations
-------------
+## Limitations
 
 - Only Debian-based support is implementend at the moment.
 - Only a single domain support is implementend at the moment.
 - There is an assumption that a domain part of host's FQDN is the target domain -> every host will be joined to the `$(hostname -d)` domain.
 
-Role Variables
---------------
+## Dependencies
+
+- `defaults` - to import common variables and handlers.
+
+## Role Variables
 
 - _defaults/main.yaml_:
 
@@ -49,8 +50,7 @@ Must be provided in any suitable way (`--extra-vars`, `vars_prompt`, `vars_files
 - `join_user` - username (without domain suffix) to be used in `net ads join` invocation.
 - `join_pass` - password to be used in `net ads join` invocation.
 
-Example Playbook
-----------------
+## Example Playbook
 
 ```yaml
 ---

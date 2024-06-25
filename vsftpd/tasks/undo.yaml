@@ -5,8 +5,8 @@
     state: absent
     update_cache: no
     purge: true
-  when:
-    - (ansible_os_family | lower) == 'debian'
+    autoremove: true
+  when: (ansible_os_family | lower) == 'debian'
 
 - name: "undo: Delete main service configuration file"
   ansible.builtin.file:

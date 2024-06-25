@@ -18,7 +18,7 @@ This role deploys FTP server powered by _vsftpd_:
 
 ## Dependencies
 
-- `defaults`: to import common variables and handlers.
+- `defaults` - to import common variables and handlers.
 
 ## Role Variables
 

@@ -9,6 +9,10 @@ then `zabbix_agent_user` is allowed to _sudo_ with no password prompt.
 
 - Only Debian-based OS support is implementend at the moment.
 
+## Dependencies
+
+- `defaults` - to import common variables and handlers.
+
 ## Role Variables
 
 - _defaults/main.yaml_:
