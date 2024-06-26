@@ -40,4 +40,9 @@
   stat:
     path: "{{ krb5_config_directory }}"
   register: stat_krb5_config_directory
+
+- name: "preflight: Does `{{ sssd_config_directory }}` exist?"
+  stat:
+    path: "{{ sssd_config_directory }}"
+  register: stat_sssd_config_directory
 ...

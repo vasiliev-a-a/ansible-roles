@@ -1,4 +1,11 @@
 ---
+- name: "config: Create SSSD configuration directory"
+  ansible.builtin.file:
+    path: "{{ sssd_config_directory }}"
+    mode: 0755
+    state: directory
+  when: stat_sssd_config_directory['stat']['exists'] == false
+
 - name: "config: Generate SSSD service configuration file"
   ansible.builtin.template:
     backup: yes
