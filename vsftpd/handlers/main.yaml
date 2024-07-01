@@ -1,0 +1,9 @@
+---
+- name: "Restart vsFTPd service"
+  become: true
+  ansible.builtin.service:
+    name: "{{ vsftpd_service }}"
+    state: restarted
+  listen: "restart vsftpd"
+  when: ansible_check_mode == false
+...

@@ -1,0 +1,6 @@
+---
+packages_install:
+  - "vsftpd"
+pam_umask_module: "pam_umask.so"
+vsftpd_service: "vsftpd.service"
+...

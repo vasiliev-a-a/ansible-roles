@@ -1,0 +1,7 @@
+{% if vsftpd_rsyslog_extra is defined %}
+{{ vsftpd_rsyslog_extra }}
+{% endif %}
+:programname, startswith, "vsftpd" {
+  {{ vsftpd_log_file }}
+  stop
+}

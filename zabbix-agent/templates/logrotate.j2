@@ -1,0 +1,7 @@
+{{ zabbix_agent_log_file }} {
+    create 0640 {{ zabbix_agent_user }} {{ zabbix_agent_group }}
+    sharedscripts
+    postrotate
+        [ -e {{ zabbix_agent_pid_file }} ] && invoke-rc.d zabbix-agent force-reload >/dev/null || true
+    endscript
+}

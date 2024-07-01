@@ -1,0 +1,37 @@
+---
+- name: "undo: Uninstall packages (Debian)"
+  ansible.builtin.apt:
+    name: "{{ packages_install }}"
+    state: absent
+    update_cache: no
+    purge: true
+    autoremove: true
+  when: (ansible_os_family | lower) == 'debian'
+
+- name: "undo: Delete configuration root"
+  ansible.builtin.file:
+    dest: "{{ zabbix_agent_config_root }}"
+    state: absent
+
+- name: "undo: Delete logrotate configuration snippet"
+  ansible.builtin.file:
+    dest: "{{ logrotate_config_snippet }}"
+    state: absent
+
+- name: "undo: Delete sudoers configuration snippet"
+  ansible.builtin.file:
+    dest: "{{ sudoers_config_snippet }}"
+    state: absent
+
+- name: "undo: Remove Zabbix Agent user account"
+  ansible.builtin.user:
+    name: "{{ zabbix_agent_user }}"
+    state: absent
+    remove: true
+    force: true
+
+- name: "undo: Remove Zabbix Agent user group"
+  ansible.builtin.group:
+    name: "{{ zabbix_agent_group }}"
+    state: absent
+...

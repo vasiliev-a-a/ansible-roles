@@ -1,0 +1,34 @@
+---
+- name: "preflight: Does `{{ sudoers_config_file }}` exist?"
+  stat:
+    path: "{{ sudoers_config_file }}"
+  register: stat_sudoers_config_file
+
+- name: "preflight: Does `{{ logrotate_config_file }}` exist?"
+  stat:
+    path: "{{ logrotate_config_file }}"
+  register: stat_logrotate_config_file
+
+- name: "preflight: Does `{{ rsyslog_config_file }}` exist?"
+  stat:
+    path: "{{ rsyslog_config_file }}"
+  register: stat_rsyslog_config_file
+
+- name: "preflight: Does `{{ sudoers_config_directory }}` exist?"
+  stat:
+    path: "{{ sudoers_config_directory }}"
+  register: stat_sudoers_config_directory
+  when: stat_sudoers_config_file['stat']['exists']
+
+- name: "preflight: Does `{{ logrotate_config_directory }}` exist?"
+  stat:
+    path: "{{ logrotate_config_directory }}"
+  register: stat_logrotate_config_directory
+  when: stat_logrotate_config_file['stat']['exists']
+
+- name: "preflight: Does `{{ rsyslog_config_directory }}` exist?"
+  stat:
+    path: "{{ rsyslog_config_directory }}"
+  register: stat_rsyslog_config_directory
+  when: stat_rsyslog_config_file['stat']['exists']
+...

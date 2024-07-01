@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  description: |
+    This role brings new hosts under control of Ansible.
+dependencies:
+- role: defaults
+...

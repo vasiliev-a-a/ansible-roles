@@ -1,0 +1,6 @@
+---
+- name: "preflight: Is `zabbix_agent_server` defined?"
+  assert:
+    that: zabbix_agent_server is defined
+    fail_msg: "The `zabbix_agent_server` must be defined in playbook/inventory."
+...

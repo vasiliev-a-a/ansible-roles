@@ -1,0 +1,16 @@
+---
+- name: "sudoers: Enable sudo for Ansible user"
+  ansible.builtin.copy:
+    backup: true
+    dest: "{{ sudoers_config_snippet }}"
+    owner: "root"
+    group: "root"
+    mode: 0440
+    content: |
+      Defaults: {{ ansible_account_user }} !requiretty
+      {{ ansible_account_user }} ALL=(ALL) NOPASSWD: ALL
+    validate: /usr/sbin/visudo -csf %s
+  when:
+  - stat_sudoers_config_file['stat']['exists']
+  - stat_sudoers_config_directory['stat']['exists']
+...

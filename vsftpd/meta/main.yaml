@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  description: |
+    This role deploys FTP server powered by vsftpd.
+dependencies:
+- role: defaults
+...

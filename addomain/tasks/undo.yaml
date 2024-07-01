@@ -1,0 +1,61 @@
+---
+- block:
+    - name: "undo: Leave the `{{ ansible_domain }}` domain"
+      ansible.builtin.command:
+        cmd: "/usr/bin/net ads leave -U {{ join_user | quote }}%{{ join_pass | quote }}"
+      no_log: true
+      register: leave_results
+      when: ansible_check_mode == false
+  rescue:
+    - meta: noop
+  always:
+    - name: "undo: Unable to leave from `{{ ansible_domain }}` domain"
+      ansible.builtin.debug:
+        var: leave_results['stdout']
+      when:
+      - ansible_check_mode == false
+      - leave_results['failed']
+
+- name: "undo: Exclude krb5 config snippet from the main config"
+  ansible.builtin.blockinfile:
+    backup: true
+    create: false
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: origin={{ snippet_name }}"
+    path: "{{ krb5_config_file }}"
+    state: absent
+  ignore_errors: true
+
+- name: "undo: Exclude samba config snippet from the main config"
+  ansible.builtin.blockinfile:
+    backup: true
+    create: false
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: origin={{ snippet_name }}"
+    path: "{{ samba_config_file }}"
+    state: absent
+  ignore_errors: true
+
+- name: "undo: Delete krb5 configuration snippet"
+  ansible.builtin.file:
+    path: "{{ krb5_config_snippet }}"
+    state: absent
+
+- name: "undo: Delete samba configuration snippet"
+  ansible.builtin.file:
+    path: "{{ samba_config_snippet }}"
+    state: absent
+
+- name: "undo: Delete logrotate configuration snippet"
+  ansible.builtin.file:
+    path: "{{ logrotate_config_snippet }}"
+    state: absent
+
+- name: "undo: Delete sudoers configuration snippet"
+  ansible.builtin.file:
+    path: "{{ sudoers_config_snippet }}"
+    state: absent
+
+- name: "undo: Delete SSSD configuration file"
+  ansible.builtin.file:
+    path: "{{ sssd_config_file }}"
+    state: absent
+...

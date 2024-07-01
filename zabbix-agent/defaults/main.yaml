@@ -1,0 +1,17 @@
+---
+zabbix_agent_pid_file: "/var/run/zabbix/zabbix_agentd.pid"
+zabbix_agent_log_file: "/var/log/zabbix/zabbix_agentd.log"
+zabbix_agent_config_root: "/etc/zabbix"
+zabbix_agent_config_file: "{{ zabbix_agent_config_root }}/zabbix_agentd.conf"
+zabbix_agent_config_directory: "{{ zabbix_agent_config_root }}/zabbix_agentd.conf.d"
+zabbix_agent_config_snippet: "{{ zabbix_agent_config_directory }}/{{ snippet_name }}.conf"
+zabbix_agent_debug_level: 3
+zabbix_agent_server: "127.0.0.1"
+zabbix_agent_server_active: "{{ zabbix_agent_server }}"
+zabbix_agent_remote_commands: false
+zabbix_agent_refresh_active_checks: 300
+zabbix_agent_hostname: "{{ ansible_facts['hostname'] | upper }}"
+zabbix_agent_user: "zabbix"
+zabbix_agent_group: "{{ zabbix_agent_user }}"
+zabbix_agent_config_extra: |
+...

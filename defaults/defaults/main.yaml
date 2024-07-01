@@ -1,0 +1,14 @@
+---
+snippet_prefix: 501
+sshd_config_file: "/etc/ssh/sshd_config"
+pam_common_session_file: "/etc/pam.d/common-session"
+sudoers_config_file: "/etc/sudoers"
+sudoers_config_directory: "/etc/sudoers.d"
+sudoers_config_snippet: "{{ sudoers_config_directory }}/{{ snippet_name }}"
+logrotate_config_file: "/etc/logrotate.conf"
+logrotate_config_directory: "/etc/logrotate.d"
+logrotate_config_snippet: "{{ logrotate_config_directory }}/{{ snippet_name }}"
+rsyslog_config_file: "/etc/rsyslog.conf"
+rsyslog_config_directory: "/etc/rsyslog.d"
+rsyslog_config_snippet: "{{ rsyslog_config_directory }}/{{ snippet_name }}.conf"
+...

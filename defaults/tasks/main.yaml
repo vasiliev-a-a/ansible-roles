@@ -1,0 +1,13 @@
+---
+- name: "Include OS specific variables"
+  ansible.builtin.include_vars:
+    file: "{{ ansible_os_family | lower }}.yaml"
+  tags: [always]
+
+- import_tasks: "preflight.yaml"
+  become: true
+
+- import_tasks: "sudoers.yaml"
+  when: stat_sudoers_config_file['stat']['exists']
+  become: true
+...

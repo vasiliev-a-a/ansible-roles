@@ -1,0 +1,66 @@
+---
+- name: "join: Create krb5 configuration directory"
+  ansible.builtin.file:
+    path: "{{ krb5_config_directory }}"
+    mode: 0755
+    state: directory
+  when: stat_krb5_config_directory['stat']['exists'] == false
+
+- name: "join: Create samba configuration directory"
+  ansible.builtin.file:
+    path: "{{ samba_config_directory }}"
+    mode: 0755
+    state: directory
+  when: stat_samba_config_directory['stat']['exists'] == false
+
+- name: "join: Include krb5 configuration snippet into the main config"
+  ansible.builtin.blockinfile:
+    backup: true
+    create: true
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: origin={{ snippet_name }}"
+    insertafter: EOF
+    path: "{{ krb5_config_file }}"
+    block: include {{ krb5_config_snippet }}
+
+- name: "join: Include samba configuration snippet into the main config"
+  ansible.builtin.blockinfile:
+    backup: true
+    create: true
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: origin={{ snippet_name }}"
+    insertafter: EOF
+    path: "{{ samba_config_file }}"
+    block: |
+      [global]
+      include = {{ samba_config_snippet }}
+
+- name: "join: Generate krb5 configuration snippet"
+  ansible.builtin.template:
+    backup: true
+    src: "./krb5.j2"
+    dest: "{{ krb5_config_snippet }}"
+    mode: "0644"
+
+- name: "join: Generate samba configuration snippet"
+  ansible.builtin.copy:
+    backup: true
+    content: |
+      realm = {{ ansible_domain | upper }}
+      workgroup = {{ ansible_domain | regex_replace('(^.+)\..+','\1') | upper }}
+      security = ADS
+      kerberos method = secrets and keytab
+    dest: "{{ samba_config_snippet }}"
+    mode: "0644"
+
+- block:
+    - name: "join: Join computer to `{{ ansible_domain }}` domain"
+      ansible.builtin.command:
+        cmd: "/usr/bin/net ads join -U {{ join_user | quote }}%{{ join_pass | quote }} osName={{ ansible_distribution }} osVer={{ ansible_distribution_version }}/{{ ansible_distribution_release }}"
+      no_log: true
+      register: join_results
+  always:
+    - name: "join: Unable to join computer to `{{ ansible_domain }}` domain"
+      ansible.builtin.debug:
+        var: join_results['stdout']
+      when: join_results['failed']
+  when: ansible_check_mode == false
+...

@@ -1,0 +1,35 @@
+---
+- name: "preflight: Is `ftp_users` defined?"
+  assert:
+    that: ftp_users is defined
+    fail_msg: "Users of ftp service must be defined in the `ftp_users` list."
+
+- name: "preflight: Is `ftp_users` a list?"
+  assert:
+    that:
+      - ftp_users is iterable
+      - ( ftp_users is string ) is false
+    fail_msg: "`ftp_users` must be defined as a list, even if it contains a single element."
+  when: ftp_users is defined
+
+- name: "preflight: Are elements of the `ftp_users` have valid format?"
+  assert:
+    that:
+      - item is mapping
+      - item['name'] is defined
+      - item['id'] is defined
+      - item['password'] is defined
+      - item['role'] is defined
+      - item['role'] in ['user','admin']
+    fail_msg: "`{{ item }}` has wrong format. Each user must be defined as a dictionary with the `name`, `id`, `password` and `role` fileds. `role` must be one of ['user', 'admin']."
+  loop: "{{ ftp_users }}"
+  when: ftp_users is defined
+
+- name: "preflight: Are elements of the `ftp_users` unique?"
+  assert:
+    that:
+      - (ftp_users | map(attribute='name') | unique() | count()) == (ftp_users | map(attribute='name') | count())
+      - (ftp_users | map(attribute='id') | unique() | count()) == (ftp_users | map(attribute='id') | count())
+    fail_msg: "`ftp_users` contains elements with non-unique values of `id` or `name` fields"
+  when: ftp_users is defined
+...

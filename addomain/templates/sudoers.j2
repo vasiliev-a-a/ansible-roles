@@ -1,0 +1,3 @@
+{% for a in admins %}
+%{{ a | replace(" ","\ ") }} ALL=(ALL:ALL) ALL
+{% endfor %}

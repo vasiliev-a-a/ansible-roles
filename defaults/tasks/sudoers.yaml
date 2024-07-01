@@ -1,0 +1,29 @@
+---
+- name: "sudoers: Create the drop-in configuration directory"
+  ansible.builtin.file:
+    path: "{{ sudoers_config_directory }}"
+    mode: 0755
+    owner: root
+    group: root
+    state: directory
+  when: stat_sudoers_config_directory['stat']['exists'] == false
+
+- name: "sudoers: Include the drop-in directory into the main config (modern syntax)"
+  ansible.builtin.lineinfile:
+    backup: true
+    insertafter: EOF
+    line: "@includedir {{ sudoers_config_directory }}"
+    path: "{{ sudoers_config_file }}"
+    regexp: '^\@includedir[\ \t]+.*'
+    validate: /usr/sbin/visudo -csf %s
+  ignore_errors: true
+
+- name: "sudoers: Include the drop-in directory into the main config (old syntax)"
+  ansible.builtin.lineinfile:
+    backup: true
+    insertafter: EOF
+    line: "#includedir {{ sudoers_config_directory }}"
+    path: "{{ sudoers_config_file }}"
+    regexp: '^\#includedir[\ \t]+.*'
+    validate: /usr/sbin/visudo -csf %s
+...

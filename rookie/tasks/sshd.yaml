@@ -1,0 +1,15 @@
+---
+- name: "sshd: Configure OpenSSH Server"
+  ansible.builtin.blockinfile:
+    backup: true
+    path: "{{ sshd_config_file }}"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: origin={{ snippet_name }}"
+    insertafter: EOF
+    block: |
+      Match Address !{{ ansible_controller_addresses | join(',!') }},!127.0.0.0/8,*
+      PubkeyAuthentication yes
+      DenyUsers {{ ansible_account_user }}
+    validate: /usr/sbin/sshd -t -f %s
+  notify:
+    - "reload sshd"
+...

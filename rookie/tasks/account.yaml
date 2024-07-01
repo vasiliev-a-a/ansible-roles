@@ -1,0 +1,55 @@
+---
+- name: "account: Enable PAM umask"
+  ansible.builtin.lineinfile:
+    backup: true
+    line: "session optional {{ pam_umask_module }}"
+    path: "{{ pam_common_session_file }}"
+    regexp: '^session[\ \t]+.*{{ pam_umask_module }}.*'
+
+- name: "account: Create an account to be used by Ansible"
+  ansible.builtin.user:
+    name: "{{ ansible_account_user }}"
+    comment: "Ansible service account,,,,umask=0077"
+    create_home: no
+    home: "{{ ansible_account_home }}"
+    group: "{{ ansible_account_group }}"
+    password_lock: true
+    uid: "{{ ansible_account_uid }}"
+    shell: /usr/bin/bash
+
+- name: "account: Create Ansible home directory"
+  ansible.builtin.file:
+    path: "{{ ansible_account_home }}"
+    state: directory
+    mode: 0700
+    group: "{{ ansible_account_group }}"
+    owner: "{{ ansible_account_user }}"
+
+- name: "account: Create `~/.ssh` directory"
+  ansible.builtin.file:
+    path: "{{ ansible_account_home }}/.ssh"
+    state: directory
+    mode: 0700
+    group: "{{ ansible_account_group }}"
+    owner: "{{ ansible_account_user }}"
+
+- name: "account: Set up `~/.ssh/auhtorized_keys`"
+  vars:
+    pub_ids: "{{ lookup('pipe','cat ~/.ssh/id_*.pub') | default('') }}"
+  ansible.builtin.blockinfile:
+    backup: true
+    block: |
+      {% if pub_ids | length > 1 %}
+      {{ pub_ids }}
+      {% endif %}
+      {% for key in authorized_keys_extra %}
+      {{ key }}
+      {% endfor %}
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: origin={{ snippet_name }}"
+    insertafter: EOF
+    create: true
+    owner: "{{ ansible_account_user }}"
+    group: "{{ ansible_account_group }}"
+    mode: 0600
+    path: "{{ ansible_account_home }}/.ssh/authorized_keys"
+...
