@@ -1,12 +1,12 @@
 ---
-- name: "undo: Uninstall packages (Debian)"
+- name: "undo: Uninstall packages (APT)"
   ansible.builtin.apt:
     name: "{{ packages_install }}"
     state: absent
     update_cache: no
     purge: true
     autoremove: true
-  when: (ansible_os_family | lower) == 'debian'
+  when: (ansible_pkg_mgr | lower) == 'apt'
 
 - name: "undo: Delete main service configuration file"
   ansible.builtin.file:
