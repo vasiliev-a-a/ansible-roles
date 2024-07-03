@@ -1,9 +1,9 @@
 ---
 - import_tasks: preflight.yaml
 
-- name: "Include OS specific variables"
-  include_vars:
-    file: "{{ ansible_os_family | lower }}.yaml"
+- name: "Include distribution specific variables"
+  ansible.builtin.include_vars:
+    file: "{{ ansible_distribution | lower }}.yaml"
   tags: [always]
 
 - import_tasks: packages.yaml
