@@ -6,6 +6,7 @@ ftp_user:
 ftp_group:
   name: ftp-users
   gid: 200
+vsftpd_listen_address: "0.0.0.0"
 vsftpd_listen_port: 21
 vsftpd_pasv_min_port: 10000
 vsftpd_pasv_max_port: 12000
