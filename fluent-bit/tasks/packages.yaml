@@ -1,0 +1,23 @@
+---
+- block:
+  - name: "packages: Obtain GPG signin key"
+    ansible.builtin.get_url:
+      dest: "/etc/apt/trusted.gpg.d/fluent-bit.key"
+      url: "https://packages.fluentbit.io/fluentbit.key"
+      mode: "0644"
+  - name: "packages: Create repository configuration"
+    ansible.builtin.template:
+      dest: "/etc/apt/sources.list.d/fluent-bit.sources"
+      src: "repo.j2"
+      mode: "0644"
+  - name: "packages: Install packages (APT)"
+    ansible.builtin.apt:
+      name: "{{ packages_install }}"
+      state: present
+      update_cache: true
+      update_cache_retries: 2
+      update_cache_retry_max_delay: 5
+      cache_valid_time: 3600
+  when:
+    - (ansible_pkg_mgr | lower) == 'apt'
+...

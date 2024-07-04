@@ -1,0 +1,16 @@
+---
+- name: "Include distribution specific variables"
+  ansible.builtin.include_vars:
+    file: "{{ ansible_distribution | lower }}.yaml"
+  tags: [always]
+
+- import_tasks: packages.yaml
+  become: true
+
+- import_tasks: configuration.yaml
+  become: true
+
+- import_tasks: undo.yaml
+  become: true
+  tags: [never, undo]
+...

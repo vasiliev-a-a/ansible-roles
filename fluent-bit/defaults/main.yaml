@@ -1,0 +1,61 @@
+---
+fluent_bit_version: ""
+fluent_bit_bin_file: "/opt/fluent-bit/bin/fluent-bit"
+fluent_bit_config_directory: "/etc/fluent-bit"
+fluent_bit_config_file: "{{ fluent_bit_config_directory }}/fluent-bit.yaml"
+fluent_bit_lua_filters_file: "{{ fluent_bit_config_directory }}/filters.lua"
+fluent_bit_systemd_unit_file: "/etc/systemd/system/{{ fluent_bit_service }}"
+fluent_bit_config_env: |
+  loki_labels: "$origin, $app, $component, $level"
+fluent_bit_config_includes: |
+fluent_bit_config_service: |
+  flush: 3
+  log_level: "info"
+  parsers_file: "parsers.conf"
+  plugins_file: "plugins.conf"
+  http_server: on
+  http_listen: "0.0.0.0"
+  http_port: 2020
+  scheduler.base: 10
+  scheduler.cap: 300
+  storage.path: "/var/lib/fluent-bit"
+  storage.max_chunks_up: 128
+  storage.backlog.mem_limit: "32M"
+  storage.metrics: on
+  storage.delete_irrecoverable_chunks: on
+fluent_bit_config_inputs: |
+  - name: "systemd"
+    tag: "logs.systemd"
+    storage.type: "filesystem"
+    systemd_filter: "PRIORITY=0"
+    systemd_filter: "PRIORITY=1"
+    systemd_filter: "PRIORITY=2"
+    systemd_filter: "PRIORITY=3"
+    systemd_filter: "PRIORITY=4"
+    systemd_filter_type: "or"
+    db: "/var/lib/fluent-bit/systemd.db"
+    lowercase: on
+    processors:
+      logs:
+        - name: "grep"
+          exclude:
+            - "message callbacks suppressed$"
+        - name: "content_modifier"
+          action: "rename"
+          key: "_hostname"
+          value: "hostname"
+        - name: "modify"
+          add:
+            - "origin linux"
+            - "app system"
+        - name: "lua"
+          script: "filters.lua"
+          call: "priority_to_level"
+fluent_bit_config_filters: |
+fluent_bit_config_outputs: |
+  - name: "file"
+    match: "*"
+    retry_limit: 30
+    path: "/var/log/fluent-bit.log"
+    mkdir: on
+...

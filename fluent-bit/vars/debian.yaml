@@ -1,0 +1,5 @@
+---
+packages_install:
+  - fluent-bit{{ fluent_bit_version }}
+fluent_bit_service: "fluent-bit.service"
+...

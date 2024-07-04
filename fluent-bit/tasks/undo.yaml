@@ -1,0 +1,38 @@
+---
+- name: "undo: Stop Fluent Bit service"
+  ansible.builtin.service:
+    name: "{{ fluent_bit_service }}"
+    enabled: false
+    state: stopped
+  when: ansible_check_mode == false
+  ignore_errors: true
+
+- block:
+  - name: "undo: Uninstall packages (APT)"
+    ansible.builtin.apt:
+      name: "{{ packages_install }}"
+      state: absent
+      update_cache: no
+      purge: true
+      autoremove: true
+  - name: "undo: Delete GPG signing key"
+    ansible.builtin.file:
+      path: "/etc/apt/trusted.gpg.d/fluent-bit.key"
+      state: absent
+  - name: "undo: Delete repository configuration"
+    ansible.builtin.file:
+      path: "/etc/apt/sources.list.d/fluent-bit.sources"
+      state: absent
+  when:
+    - (ansible_pkg_mgr | lower) == 'apt'
+
+- name: "undo: Delete configuration directory"
+  ansible.builtin.file:
+      path: "{{ fluent_bit_config_directory }}"
+      state: absent
+
+- name: "undo: Delete customized systemd unit file"
+  ansible.builtin.file:
+    path: "{{ fluent_bit_systemd_unit_file }}"
+    state: absent
+...

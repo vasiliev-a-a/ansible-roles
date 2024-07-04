@@ -1,0 +1,35 @@
+---
+- name: "configuration: Ensure that the configuration directory exists"
+  ansible.builtin.file:
+    path: "{{ fluent_bit_config_directory }}"
+    mode: 0755
+    state: directory
+
+- name: "configuration: Create configuration file"
+  ansible.builtin.template:
+    backup: true
+    dest: "{{ fluent_bit_config_file }}"
+    src: "config.j2"
+    mode: 0644
+  notify: "restart fluent-bit"
+
+- name: "configuration: Create LUA filters file"
+  ansible.builtin.copy:
+    backup: true
+    src: "filters.lua"
+    dest: "{{ fluent_bit_lua_filters_file }}"
+    mode: 0644
+
+- name: "configuration: Create customized systemd unit file"
+  ansible.builtin.template:
+    backup: true
+    src: "unit.j2"
+    dest: "{{ fluent_bit_systemd_unit_file }}"
+    mode: 0644
+
+- name: "configuration: Enable Fluent Bit service"
+  ansible.builtin.service:
+    name: "{{ fluent_bit_service }}"
+    enabled: true
+  when: ansible_check_mode == false
+...

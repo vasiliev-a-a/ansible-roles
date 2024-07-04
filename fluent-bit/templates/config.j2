@@ -1,0 +1,25 @@
+---
+{% if fluent_bit_config_env | length >1 %}
+env:
+{{ fluent_bit_config_env | indent(width=2, first=true) -}}
+{% endif %}
+{% if fluent_bit_config_includes | length >1 %}
+includes:
+{{ fluent_bit_config_includes | indent(width=2, first=true) -}}
+{% endif %}
+service:
+{{ fluent_bit_config_service | indent(width=2, first=true) -}}
+pipeline:
+{% if fluent_bit_config_inputs | length >1 %}
+  inputs:
+{{ fluent_bit_config_inputs | indent(width=4, first=true) -}}
+{% endif %}
+{% if fluent_bit_config_filters | length >1 %}
+  filters:
+{{ fluent_bit_config_filters | indent(width=4, first=true) -}}
+{% endif %}
+{% if fluent_bit_config_outputs | length >1 %}
+  outputs:
+{{ fluent_bit_config_outputs | indent(width=4, first=true) -}}
+{% endif %}
+...
