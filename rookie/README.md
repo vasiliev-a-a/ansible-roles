@@ -11,32 +11,43 @@ This role brings new hosts (rookies) under control of Ansible:
    - The user will be allowed to login with ssh only from `ansible_controller_addresses`.
    - The user will be permitted to _sudo_ any command without password prompt.
 
+___
+
 ## Limitations
 
 - Only Debian-based OS support is implementend at the moment.
+
+___
 
 ## Dependencies
 
 - `defaults` - to import common variables and handlers.
 
-## Role Variables
+___
 
-`ansible_controller_addresses` defines a list of hosts, from which `ansible_account_user`  
-is allowed to connect. If not provided explicitly, it will be initialized to ipv4 addresses  
-of the host currently executing the playbook during the preflight task.
+## Role Content
+
+`ansible_controller_addresses` defines a list of hosts, from which `ansible_account_user` is allowed to connect. If not provided explicitly, it will be initialized to ipv4 addresses of the host currently executing the playbook during the preflight task.
 
 - _defaults/main.yaml_:
 
-  - `ansible_become_pass` - password that is used to elevate privileges
-  - `ansible_account_user`, `ansible_account_group`, `ansible_account_uid`, `ansible_account_home` - options for management account.
-  - `authorized_keys_extra` - these ones will be included into _~/.ssh/authorized_keys_.
-
-     Any of _~/.ssh/id\_{dsa,rsa,ecdsa,ed25519}.pub_ of the user, who is executing a playbook, is also included.
+  | Variable | Default | Description |
+  |:---------|:-------:|:------------|
+  | `ansible_account_group` | `users` | Primary group of the management account. |
+  | `ansible_account_home` | `/home/{{ ansible_account_user }}` | Home directory of the management account. |
+  | `ansible_account_uid` | `1991` | UID of the management account. |
+  | `ansible_account_user` | `ansible` | Username of the management account. |
+  | `ansible_become_pass` | `{{ ansible_password}}` | Password that is used to elevate privileges. |
+  | `authorized_keys_extra` | `[]` | These ones will be included into _~/.ssh/authorized_keys_ in addition to any of _~/.ssh/id\_{dsa,rsa,ecdsa,ed25519}.pub_ of the user executing the playbook. |
 
 - _vars/debian.yaml_:
 
-  - `packages_install` - list of packages that this role will install.
-  - `pam_umask_module` - name of the _umask_ PAM module.
+  | Variable | Default | Description |
+  |:---------|:-------:|:------------|
+  | `packages_install` | `[rsync]` | List of packages that this role will install. |
+  | `pam_umask_module` | `pam_umask.so` | Name of the _umask_ PAM module. |
+
+___
 
 ## Example Playbook
 
