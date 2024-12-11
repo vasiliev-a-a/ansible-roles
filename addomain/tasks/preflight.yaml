@@ -22,12 +22,12 @@
       - ansible_domain is string
     fail_msg: "`ansible_domain` is not defined. Host must be configured with FQDN of the target domain."
 
-- name: "preflight: Is `admins` a list?"
+- name: "preflight: Is `sssd_allow_groups` a list?"
   assert:
     that:
-      - admins is iterable
-      - ( admins is string ) is false
-    fail_msg: "`admins` must be defined as a list of strings, even if it contains a single element."
+      - sssd_allow_groups is iterable
+      - ( sssd_allow_groups is string ) is false
+    fail_msg: "`sssd_allow_groups` must be defined as a list of strings, even if it contains a single element."
   delegate_to: localhost
   run_once: true
 
