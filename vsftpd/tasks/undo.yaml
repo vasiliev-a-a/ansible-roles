@@ -28,7 +28,7 @@
     path: "{{ rsyslog_config_snippet }}"
     state: absent
 
-- name: "directories: Unset Chroot and SFTP for members of {{ ftp_group['name'] }}"
+- name: "undo: Unset Chroot and SFTP for members of {{ ftp_group['name'] }}"
   ansible.builtin.blockinfile:
     backup: true
     marker: "# {mark} ANSIBLE MANAGED BLOCK: origin={{ snippet_name }}"
