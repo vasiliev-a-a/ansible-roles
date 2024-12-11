@@ -1,5 +1,5 @@
 ---
-- name: "undo: Uninstall packages (APT)"
+- name: "undo: APT: Uninstall packages"
   ansible.builtin.apt:
     name: "{{ packages_install }}"
     state: absent
@@ -28,7 +28,7 @@
     path: "{{ rsyslog_config_snippet }}"
     state: absent
 
-- name: "directories: Undo Chroot and SFTP for members of {{ ftp_group['name'] }}"
+- name: "directories: Unset Chroot and SFTP for members of {{ ftp_group['name'] }}"
   ansible.builtin.blockinfile:
     backup: true
     marker: "# {mark} ANSIBLE MANAGED BLOCK: origin={{ snippet_name }}"

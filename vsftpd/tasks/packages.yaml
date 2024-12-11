@@ -1,5 +1,5 @@
 ---
-- name: "packages: Install packages (APT)"
+- name: "packages: APT: Install packages"
   ansible.builtin.apt:
     name: "{{ packages_install }}"
     state: present
