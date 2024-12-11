@@ -3,4 +3,12 @@
   assert:
     that: zabbix_agent_server is defined
     fail_msg: "The `zabbix_agent_server` must be defined in playbook/inventory."
+
+- name: "preflight: Is `zabbix_agent_sudo_tools` a list?"
+  assert:
+    that:
+      - zabbix_agent_sudo_tools is iterable
+      - ( zabbix_agent_sudo_tools is string ) is false
+    fail_msg: "`zabbix_agent_sudo_tools` must be defined as a list, even if it contains a single element."
+  when: zabbix_agent_sudo_tools is defined
 ...

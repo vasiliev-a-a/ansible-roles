@@ -1,0 +1,33 @@
+---
+- name: "packages: APT: Setup trusted GPG keys"
+  ansible.builtin.copy:
+    backup: true
+    src: "{{ item }}"
+    dest: "{{ apt_trusted_gpg_d }}/"
+    mode: "0644"
+  loop: "{{ lookup('fileglob', 'apt_trusted_gpg_d/*', wantlist=True) }}"
+
+- name: "packages: APT: Setup repository"
+  block:
+  - name: "packages: APT: Write repository file"
+    ansible.builtin.template:
+      backup: true
+      src: apt_source.j2
+      dest: "{{ apt_sources_list_d }}/zabbix-{{ zabbix_agent_version }}.list"
+      mode: "0644"
+      validate: /usr/bin/apt-get -o dir::etc::sourceparts=/dev/null -o dir::etc::sourcelist=%s update
+  rescue:
+    - name: "packages: APT: Invalid repository configuration"
+      ansible.builtin.debug:
+        msg: |
+          Could not update package cache with the provided repository configuration, thus it was not applied.
+
+- name: "packages: APT: Install packages"
+  ansible.builtin.apt:
+    name: "{{ packages_install }}"
+    state: present
+    update_cache: true
+    update_cache_retries: 2
+    update_cache_retry_max_delay: 5
+  when: ansible_check_mode == false
+...

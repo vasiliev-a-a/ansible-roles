@@ -1,5 +1,5 @@
 ---
-- name: "Restart Zabbix-Agent service"
+- name: "Restart Zabbix Agent service"
   become: true
   ansible.builtin.service:
     name: "{{ zabbix_agent_service }}"

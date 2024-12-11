@@ -1,5 +1,5 @@
 ---
 packages_install:
-  - zabbix-agent
+  - 'zabbix-agent=1:{{ zabbix_agent_version }}.*'
 zabbix_agent_service: "zabbix-agent.service"
 ...

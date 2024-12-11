@@ -1,0 +1,5 @@
+Defaults: {{ zabbix_agent_user }} !requiretty
+
+Cmnd_Alias ZABBIX_AGENT_TOOLS = {{ zabbix_agent_sudo_tools | join(',') }}
+
+{{ zabbix_agent_user }} ALL=(ALL) NOPASSWD: ZABBIX_AGENT_TOOLS

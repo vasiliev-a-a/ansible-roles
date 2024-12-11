@@ -12,5 +12,5 @@ AllowKey=system.run[*]
 {% else %}
 DenyKey=system.run[*]
 {% endif %}
-LogRemoteCommands=1
+LogRemoteCommands={{ zabbix_agent_log_remote_commands }}
 {{ zabbix_agent_config_extra }}

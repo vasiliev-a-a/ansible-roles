@@ -1,11 +1,21 @@
 ---
-- name: "undo: Uninstall packages (APT)"
-  ansible.builtin.apt:
-    name: "{{ packages_install }}"
-    state: absent
-    update_cache: no
-    purge: true
-    autoremove: true
+- block:
+  - name: "undo: APT: Uninstall packages"
+    ansible.builtin.apt:
+      name: "{{ packages_install }}"
+      state: absent
+      update_cache: no
+      purge: true
+      autoremove: true
+  - name: "undo: APT: Remove repository file"
+    ansible.builtin.file:
+      dest: "{{ apt_sources_list_d }}/zabbix-{{ zabbix_agent_version }}.list"
+      state: absent
+  - name: "undo: APT: Remove trusted GPG keys"
+    ansible.builtin.file:
+      dest: "{{ apt_trusted_gpg_d }}/{{ item.split('/')[-1] }}"
+      state: absent
+    loop: "{{ lookup('fileglob', 'apt_trusted_gpg_d/*', wantlist=True) }}" 
   when: (ansible_pkg_mgr | lower) == 'apt'
 
 - name: "undo: Delete configuration root"
@@ -15,12 +25,12 @@
 
 - name: "undo: Delete logrotate configuration snippet"
   ansible.builtin.file:
-    dest: "{{ logrotate_config_snippet }}"
+    dest: "{{ zabbix_agent_logrotate_config_snippet }}"
     state: absent
 
 - name: "undo: Delete sudoers configuration snippet"
   ansible.builtin.file:
-    dest: "{{ sudoers_config_snippet }}"
+    dest: "{{ zabbix_agent_sudoers_config_snippet }}"
     state: absent
 
 - name: "undo: Remove Zabbix Agent user account"
