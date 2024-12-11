@@ -14,8 +14,12 @@ In that way roles can be included as a submodule to customer's private projects.
 
 👍 These guidelines will maximize compatibility of roles, and simplify implementations of `undo` routines.
 
+___
+
 ## 🎉 To guests
 
 These roles were designed specifically for our environment ➡️ particular goals were set, and decisions made.
 
 ☣ Take cautions and try it in non-production environment at first.
+
+___

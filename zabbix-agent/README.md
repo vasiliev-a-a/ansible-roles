@@ -50,3 +50,5 @@ then `zabbix_agent_user` is allowed to _sudo_ with no password prompt.
       zabbix_agent_server: "192.168.0.100"
 ...
 ```
+
+___
