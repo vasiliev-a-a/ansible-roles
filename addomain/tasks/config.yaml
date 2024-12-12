@@ -18,7 +18,7 @@
   ansible.builtin.template:
     backup: true
     src: "./logrotate.j2"
-    dest: "{{ logrotate_config_snippet }}"
+    dest: "{{ sssd_logrotate_config_snippet }}"
   when:
   - stat_logrotate_config_file['stat']['exists']
   - stat_logrotate_config_directory['stat']['exists']
@@ -34,7 +34,7 @@
   ansible.builtin.template:
     backup: true
     src: "./sudoers.j2"
-    dest: "{{ sudoers_config_snippet }}"
+    dest: "{{ sssd_sudoers_config_snippet }}"
     mode: 0440
     validate: /usr/sbin/visudo -csf %s
 

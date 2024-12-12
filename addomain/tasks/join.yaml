@@ -20,7 +20,7 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK: origin={{ snippet_name }}"
     insertafter: EOF
     path: "{{ krb5_config_file }}"
-    block: include {{ krb5_config_snippet }}
+    block: include {{ sssd_krb5_config_snippet }}
 
 - name: "join: Include samba configuration snippet into the main config"
   ansible.builtin.blockinfile:
@@ -31,13 +31,13 @@
     path: "{{ samba_config_file }}"
     block: |
       [global]
-      include = {{ samba_config_snippet }}
+      include = {{ sssd_samba_config_snippet }}
 
 - name: "join: Generate krb5 configuration snippet"
   ansible.builtin.template:
     backup: true
     src: "./krb5.j2"
-    dest: "{{ krb5_config_snippet }}"
+    dest: "{{ sssd_krb5_config_snippet }}"
     mode: "0644"
 
 - name: "join: Generate samba configuration snippet"
@@ -48,7 +48,7 @@
       workgroup = {{ ansible_domain | regex_replace('(^.+)\..+','\1') | upper }}
       security = ADS
       kerberos method = secrets and keytab
-    dest: "{{ samba_config_snippet }}"
+    dest: "{{ sssd_samba_config_snippet }}"
     mode: "0644"
 
 - block:

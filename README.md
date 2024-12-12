@@ -10,7 +10,8 @@ In that way roles can be included as a submodule to customer's private projects.
 - Stick to the drop-in configuration snippets with the discriptive names when it is possible
 - Prefer the _blockinfile_ with descriptive `marker` over the _lineinfile_
 - Use the `backup: true` when it is supported
-- Variables can be configured on a host or group level ➡️ their names must be descriptive enough to identify a role they are related to
+- Variables can be defined on a host or group level ➡️ variable names must be descriptive enough to identify a role they are related to
+- Keep an eye for name collisions across different roles
 
 👍 These guidelines will maximize compatibility of roles, and simplify implementations of `undo` routines.
 
@@ -18,8 +19,8 @@ ___
 
 ## 🎉 To guests
 
-These roles were designed specifically for our environment ➡️ particular goals were set, and decisions made.
+These roles were designed specifically for our environment ➡️ particular decissions were made to achieve goals.
 
-☣ Take cautions and try it in non-production environment at first.
+>☣**Warning:** Take cautions and try it in non-production environment at first.
 
 ___

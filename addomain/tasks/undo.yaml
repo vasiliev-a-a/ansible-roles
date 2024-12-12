@@ -36,22 +36,22 @@
 
 - name: "undo: Delete krb5 configuration snippet"
   ansible.builtin.file:
-    path: "{{ krb5_config_snippet }}"
+    path: "{{ sssd_krb5_config_snippet }}"
     state: absent
 
 - name: "undo: Delete samba configuration snippet"
   ansible.builtin.file:
-    path: "{{ samba_config_snippet }}"
+    path: "{{ sssd_samba_config_snippet }}"
     state: absent
 
 - name: "undo: Delete logrotate configuration snippet"
   ansible.builtin.file:
-    path: "{{ logrotate_config_snippet }}"
+    path: "{{ sssd_logrotate_config_snippet }}"
     state: absent
 
 - name: "undo: Delete sudoers configuration snippet"
   ansible.builtin.file:
-    path: "{{ sudoers_config_snippet }}"
+    path: "{{ sssd_sudoers_config_snippet }}"
     state: absent
 
 - name: "undo: Delete SSSD configuration file"

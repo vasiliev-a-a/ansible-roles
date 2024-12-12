@@ -34,7 +34,7 @@
   ansible.builtin.template:
     backup: true
     src: "./logrotate.j2"
-    dest: "{{ logrotate_config_snippet }}"
+    dest: "{{ vsftpd_logrotate_config_snippet }}"
   when:
   - stat_logrotate_config_file['stat']['exists']
   - stat_logrotate_config_directory['stat']['exists']
@@ -43,7 +43,7 @@
   ansible.builtin.template:
     backup: true
     src: "./rsyslog.j2"
-    dest: "{{ rsyslog_config_snippet }}"
+    dest: "{{ vsftpd_rsyslog_config_snippet }}"
   notify: "restart rsyslog"
   when:
   - stat_rsyslog_config_file['stat']['exists']

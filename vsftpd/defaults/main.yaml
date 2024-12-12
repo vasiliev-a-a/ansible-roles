@@ -12,11 +12,13 @@ vsftpd_config_file: "/etc/vsftpd.conf"
 vsftpd_listen_address: "0.0.0.0"
 vsftpd_listen_port: 21
 vsftpd_log_file: "/var/log/vsftpd.log"
+vsftpd_logrotate_config_snippet: "{{ logrotate_config_snippet }}"
 vsftpd_pasv_min_port: 10000
 vsftpd_pasv_max_port: 12000
 vsftpd_rsa_cert_file: "{{ vsftpd_config_directory }}/cert.pem"
 vsftpd_rsa_cert: |
   -----CERTIFICATE CONTENT HERE----
+vsftpd_rsyslog_config_snippet: "{{ rsyslog_config_snippet }}"
 vsftpd_rsyslog_extra: |
 vsftpd_xferlog_file: "/var/log/xferlog"
 ...

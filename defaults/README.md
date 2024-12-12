@@ -4,7 +4,7 @@ The sole purpose of this role is to hold various frequently used variables and h
 
 It can be either included as a dependency, or assigned explicitly within a playbook.
 
->✍️**Note:** Although there is a lot of variables, only one action is performed - enforcing the drop-in configuration model for the _sudo_. All other usecases of variables are left to specialized roles.
+>✍️**Note:** Although there is a lot of variables, only one action is performed - enforcing the drop-in configuration model for the **sudo**. All other usecases of variables are left to specialized roles.
 
 ___
 
@@ -22,18 +22,18 @@ ___
 
   | Variable | Default | Description |
   |:---------|:-------:|:------------|
-  | `logrotate_config_directory` | `/etc/logrotate.d` | Folder with _logrotate_ configuration snippets. |
-  | `logrotate_config_file` | `/etc/logrotate.conf` | Main _logrotate_ configuration file. |
-  | `logrotate_config_snippet` | `{{ logrotate_config_directory }}/{{ snippet_name }}` | The _logrotate_ configuration snippet. |
-  | `pam_common_session_file` | `/etc/pam.d/common-session` | Generic PAM configuration file for type _session_. |
-  | `rsyslog_config_directory` | `/etc/rsyslog.d` | Folder with _rsyslog_ configuration snippets. |
-  | `rsyslog_config_file` | `/etc/rsyslog.conf` | Main _rsyslog_ configuration file. |
-  | `rsyslog_config_snippet` | `{{ rsyslog_config_directory }}/{{ snippet_name }}.conf` | The _rsyslog_ configuration snippet. |
+  | `logrotate_config_directory` | `/etc/logrotate.d` | **logrotate** drop-in configuration directory. |
+  | `logrotate_config_file` | `/etc/logrotate.conf` | **logrotate** main configuration file. |
+  | `logrotate_config_snippet` | `{{ logrotate_config_directory }}/{{ snippet_name }}` | **logrotate** configuration snippet. |
+  | `pam_common_session_file` | `/etc/pam.d/common-session` | PAM configuration file for common session tasks. |
+  | `rsyslog_config_directory` | `/etc/rsyslog.d` | **rsyslog** drop-in configuration directory. |
+  | `rsyslog_config_file` | `/etc/rsyslog.conf` | **rsyslog** main configuration file. |
+  | `rsyslog_config_snippet` | `{{ rsyslog_config_directory }}/{{ snippet_name }}.conf` | **rsyslog** configuration snippet. |
   | `snippet_name` | `{{ ansible_role_name }}` | Name for configuration snippets. |
-  | `sshd_config_file` | `/etc/ssh/sshd_config` | Main _sshd_ configuration file. |
-  | `sudoers_config_directory` | `/etc/sudoers.d/` | Folder with _sudo_ configuration snippets. |
-  | `sudoers_config_file` | `/etc/sudoers` | Main _sudo_ configuration file |
-  | `sudoers_config_snippet` | `{{ sudoers_config_directory }}{{ snippet_name }}` | The _sudo_ configuration snippet. |
+  | `sshd_config_file` | `/etc/ssh/sshd_config` | **sshd** main configuration file. |
+  | `sudoers_config_directory` | `/etc/sudoers.d/` | **sudo** drop-in configuration directory. |
+  | `sudoers_config_file` | `/etc/sudoers` | **sudo** main configuration file. |
+  | `sudoers_config_snippet` | `{{ sudoers_config_directory }}{{ snippet_name }}` | **sudo** configuration snippet. |
 
 - _handlers/main.yaml_:
 
@@ -47,8 +47,8 @@ ___
 
   | Variable | Default | Description |
   |:---------|:-------:|:------------|
-  | `rsyslog_service` | `rsyslog.service` | Name of the _Rsyslog_ service. |
-  | `sshd_service` | `sshd.service` | Name of the _SSHd_ service. |
+  | `rsyslog_service` | `rsyslog.service` | Identity of the **rsyslog** service. |
+  | `sshd_service` | `sshd.service` | Identity of the **sshd** service. |
 
 - _tasks/preflight.yaml_:
 

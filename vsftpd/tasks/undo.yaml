@@ -20,12 +20,12 @@
 
 - name: "undo: Delete logrotate configuration snippet"
   ansible.builtin.file:
-    path: "{{ logrotate_config_snippet }}"
+    path: "{{ vsftpd_logrotate_config_snippet }}"
     state: absent
 
 - name: "undo: Delete rsyslog configuration snippet"
   ansible.builtin.file:
-    path: "{{ rsyslog_config_snippet }}"
+    path: "{{ vsftpd_rsyslog_config_snippet }}"
     state: absent
 
 - name: "undo: Unset Chroot and SFTP for members of {{ ftp_group['name'] }}"

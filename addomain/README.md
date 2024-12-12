@@ -3,7 +3,7 @@
 This role joins hosts to an Active Directory Domain:
 
 1. It installs the required `packages_install`.
-2. It configures _samba_ and _krb5-config_ packages.
+2. It configures **samba** and **krb5-config** packages.
 
    The changes are made by including config snippets into main files.
 
@@ -32,27 +32,29 @@ ___
 
   - `sssd_allow_groups` - list of the AD groups, whose members are allowed to access the linux hosts:
 
-    - These will be allowed to _sudo_
+    - These will be allowed to **sudo**
     - These will be included into `simple_allow_groups` of _sssd.conf_
 
   | Variable | Default | Description |
   |:---------|:-------:|:------------|
-  | `krb5_config_directory` | `/etc/krb5.conf.d` | Direcotry where _krb5_ configuration snippet will be created. |
-  | `krb5_config_file` | `/etc/krb5.conf` | _krb5_ main configuration file. |
-  | `krb5_config_snippet` | `{{ krb5_config_directory }}/{{ snippet_name }}`  | _krb5_ configuration snippet. |
-  | `samba_config_directory` | `/etc/samba` | Direcotry where _samba_ configuration snippet will be created. |
-  | `samba_config_file` | `/etc/samba/smb.conf` | _samba_ main configuration file. |
-  | `samba_config_snippet` | `{{ samba_config_directory }}/{{ snippet_name }}.conf` | _samba_ configuration snippet. |
-  | `sssd_config_directory` | `/etc/sssd/conf.d` | Direcotry required for _sssd.socket_ to start. |
-  | `sssd_config_file` | `/etc/sssd/sssd.conf` | _sssd_ main configuration file. |
+  | `krb5_config_directory` | `/etc/krb5.conf.d` | **krb5** drop-in configuration directory. |
+  | `krb5_config_file` | `/etc/krb5.conf` | **krb5** main configuration file. |
+  | `samba_config_directory` | `/etc/samba` | **samba** drop-in configuration directory. |
+  | `samba_config_file` | `/etc/samba/smb.conf` | **samba** main configuration file. |
+  | `sssd_config_directory` | `/etc/sssd/conf.d` | **sssd** drop-in configuration directory. |
+  | `sssd_config_file` | `/etc/sssd/sssd.conf` | **sssd** main configuration file. |
+  | `sssd_krb5_config_snippet` | `{{ krb5_config_directory }}/{{ snippet_name }}`  | **krb5** configuration snippet. |
+  | `sssd_samba_config_snippet` | `{{ samba_config_directory }}/{{ snippet_name }}.conf` | **samba** configuration snippet. |
+  | `sssd_logrotate_config_snippet` | `{{ logrotate_config_snippet }}` | **logrotate** configuration snippet. |
+  | `sssd_sudoers_config_snippet` | `{{ sudoers_config_snippet }}` | **sudo** configuration snippet. |
 
 - _vars/debian.yaml_:
 
   | Variable | Default | Description |
   |:---------|:-------:|:------------|
-  | `packages_install` | `[....]` | The list of packages this role will install. |
-  | `pam_mkhomedir_module` | `pam_mkhomedir.so` | Name of the PAM _mkhomedir_ module. |
-  | `sssd_service` | `sssd.service` | Identity of the sssd service. |
+  | `packages_install` | `[...]` | The list of packages this role will install. |
+  | `pam_mkhomedir_module` | `pam_mkhomedir.so` | Identity of the **mkhomedir** PAM module. |
+  | `sssd_service` | `sssd.service` | Identity of the **sssd** service. |
 
 >☝️**Important:** These must be provided in any suitable way (`--extra-vars`, `vars_prompt`, `vars_files`, inventory):
 

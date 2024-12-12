@@ -2,14 +2,14 @@
 
 This role brings new hosts (rookies) under control of Ansible:
 
-1. It installs _rsync_ package to satisfy _ANSIBLE.POSIX.SYNCHRONIZE_ module.
-2. It enables pam umask module, so umask in account GECOS field gets respected.
+1. It installs **rsync** package to satisfy _ANSIBLE.POSIX.SYNCHRONIZE_ module.
+2. It enables pam **umask** module, so umask in account GECOS field gets respected.
 3. It creates a user account for management purposes:
 
    - The user's password will be locked.
    - The user's _~/.ssh/authorized_keys_ will be populated to allow public key authentication.
    - The user will be allowed to login with ssh only from `ansible_controller_addresses`.
-   - The user will be permitted to _sudo_ any command without password prompt.
+   - The user will be permitted to **sudo** any command without password prompt.
 
 ___
 
@@ -45,7 +45,7 @@ ___
   | Variable | Default | Description |
   |:---------|:-------:|:------------|
   | `packages_install` | `[rsync]` | List of packages that this role will install. |
-  | `pam_umask_module` | `pam_umask.so` | Name of the _umask_ PAM module. |
+  | `pam_umask_module` | `pam_umask.so` | Identity of the **umask** PAM module. |
 
 ___
 
