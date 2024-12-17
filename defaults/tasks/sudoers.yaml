@@ -8,22 +8,29 @@
     state: directory
   when: stat_sudoers_config_directory['stat']['exists'] == false
 
-- name: "sudoers: Include the drop-in directory into the main config (modern syntax)"
-  ansible.builtin.lineinfile:
-    backup: true
-    insertafter: EOF
-    line: "@includedir {{ sudoers_config_directory }}"
-    path: "{{ sudoers_config_file }}"
-    regexp: '^\@includedir[\ \t]+.*'
-    validate: /usr/sbin/visudo -csf %s
-  ignore_errors: true
-
-- name: "sudoers: Include the drop-in directory into the main config (old syntax)"
-  ansible.builtin.lineinfile:
-    backup: true
-    insertafter: EOF
-    line: "#includedir {{ sudoers_config_directory }}"
-    path: "{{ sudoers_config_file }}"
-    regexp: '^\#includedir[\ \t]+.*'
-    validate: /usr/sbin/visudo -csf %s
+- block:
+  - name: "sudoers: Include the drop-in directory into the main config (modern syntax)"
+    ansible.builtin.lineinfile:
+      backup: true
+      insertafter: EOF
+      line: "@includedir {{ sudoers_config_directory }}"
+      path: "{{ sudoers_config_file }}"
+      regexp: '^\@includedir[\ \t]+.*'
+      validate: /usr/sbin/visudo -csf %s
+  - name: "sudoers: Remove the drop-in directory into the main config (old syntax)"
+    ansible.builtin.lineinfile:
+      backup: true
+      path: "{{ sudoers_config_file }}"
+      regexp: '^\#includedir[\ \t]+.*'
+      state: absent
+      validate: /usr/sbin/visudo -csf %s
+  rescue:
+  - name: "sudoers: Include the drop-in directory into the main config (old syntax)"
+    ansible.builtin.lineinfile:
+      backup: true
+      insertafter: EOF
+      line: "#includedir {{ sudoers_config_directory }}"
+      path: "{{ sudoers_config_file }}"
+      regexp: '^\#includedir[\ \t]+.*'
+      validate: /usr/sbin/visudo -csf %s
 ...
