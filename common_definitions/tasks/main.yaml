@@ -1,0 +1,32 @@
+---
+- name: "Include distribution specific variables"
+  ansible.builtin.include_vars:
+    file: "{{ ansible_distribution | lower }}.yaml"
+  tags: [always]
+
+- name: "Initialize `pam_common_session_file` with default value"
+  ansible.builtin.set_fact:
+    pam_common_session_file: "{{ default_pam_common_session_file }}"
+  when: pam_common_session_file is undefined
+
+- name: "Initialize `rsyslog_service_name` with default value"
+  ansible.builtin.set_fact:
+    rsyslog_service_name: "{{ default_rsyslog_service_name }}"
+  when: rsyslog_service_name is undefined
+
+- name: "Initialize `sshd_config_file` with default value"
+  ansible.builtin.set_fact:
+    sshd_config_file: "{{ default_sshd_config_file }}"
+  when: sshd_config_file is undefined
+
+- name: "Initialize `sshd_service_name` with default value"
+  ansible.builtin.set_fact:
+    sshd_service_name: "{{ default_sshd_service_name }}"
+  when: sshd_service_name is undefined
+
+- name: "Reveal `snippet_name`"
+  ansible.builtin.assert:
+    that: snippet_prefix is defined
+    success_msg: "snippet_prefix: {{ snippet_prefix }}, snippet_name: {{ snippet_name }}"
+    fail_msg: "snippet_prefix: undefined, snippet_name: {{ snippet_name }}"
+...

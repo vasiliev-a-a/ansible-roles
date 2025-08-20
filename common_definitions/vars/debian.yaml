@@ -1,0 +1,6 @@
+---
+default_pam_common_session_file: "/etc/pam.d/common-session"
+default_rsyslog_service_name: "rsyslog"
+default_sshd_config_file: "/etc/ssh/sshd_config"
+default_sshd_service_name: "sshd"
+...
