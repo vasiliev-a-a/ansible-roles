@@ -1,0 +1,6 @@
+---
+galaxy_info:
+  description: |
+    Common variables definition.
+dependencies: []
+...

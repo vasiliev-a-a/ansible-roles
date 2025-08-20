@@ -1,0 +1,4 @@
+---
+origin_label: "{{ ansible_role_name | default('ansible')}}"
+origin: "{% if origin_prefix is defined %}{{ origin_prefix }}-{% endif%}{{ origin_label }}"
+...
