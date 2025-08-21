@@ -1,8 +1,8 @@
 ---
-- name: "services: Restart SSSD service"
+- name: "Restart SSSD service"
   become: true
   ansible.builtin.service:
-    name: "{{ sssd_service }}"
+    name: "{{ sssd_service_name }}"
     state: restarted
   listen: "restart sssd"
   when: ansible_check_mode == false  

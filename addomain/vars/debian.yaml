@@ -8,6 +8,16 @@ packages_install:
   - samba-common-bin
   - krb5-config
   - krb5-user
-pam_mkhomedir_module: "pam_mkhomedir.so"
-sssd_service: "sssd.service"
+
+default_pam_mkhomedir_module_name: "pam_mkhomedir.so"
+
+default_system_krb5_config_file: "/etc/krb5.conf"
+default_system_krb5_config_directory: "/etc/krb5.conf.d"
+
+default_system_samba_config_file: "/etc/samba/smb.conf"
+default_system_samba_config_directory: "/etc/samba"
+
+default_sssd_service_name: "sssd.service"
+default_system_sssd_config_file: "/etc/sssd/sssd.conf"
+default_system_sssd_config_directory: "/etc/sssd/conf.d"
 ...

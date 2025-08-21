@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   description: |
-    This role joins hosts to an Active Directory Domain.
+    This role joins the target hosts to an Active Directory domain.
 dependencies:
-- role: defaults
+- role: common_variables
 ...

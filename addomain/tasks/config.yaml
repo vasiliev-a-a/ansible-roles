@@ -1,46 +1,52 @@
 ---
 - name: "config: Create SSSD configuration directory"
   ansible.builtin.file:
-    path: "{{ sssd_config_directory }}"
+    path: "{{ system_sssd_config_directory }}"
     mode: 0755
     state: directory
-  when: stat_sssd_config_directory['stat']['exists'] == false
+  when: _system_sssd_config_directory['stat']['exists'] == false
 
 - name: "config: Generate SSSD service configuration file"
   ansible.builtin.template:
     backup: yes
     src: "./sssd.j2"
-    dest: "{{ sssd_config_file }}"
+    dest: "{{ system_sssd_config_file }}"
     mode: "0600"
   notify: "restart sssd"
 
-- name: "config: Create logrotate configuration snippet"
+- name: "config: Create SSSD logrotate configuration file"
   ansible.builtin.template:
     backup: true
     src: "./logrotate.j2"
-    dest: "{{ sssd_logrotate_config_snippet }}"
+    dest: "{{ sssd_logrotate_config_file }}"
   when:
-  - stat_logrotate_config_file['stat']['exists']
-  - stat_logrotate_config_directory['stat']['exists']
+  - _system_logrotate_config_file['stat']['exists']
+  - _system_logrotate_config_directory['stat']['exists']
 
 - name: "config: Enable PAM mkhomedir"
   ansible.builtin.lineinfile:
     backup: yes
-    line: "session optional {{ pam_mkhomedir_module }} umask=0077"
+    line: "session optional {{ pam_mkhomedir_module_name }} umask=0077"
     path: "{{ pam_common_session_file }}"
-    regexp: '^session[\ \t]+.*{{ pam_mkhomedir_module }}.*'
+    regexp: '^session[\ \t]+.*{{ pam_mkhomedir_module_name }}.*'
 
-- name: "config: Create sudoers configuration snippet"
-  ansible.builtin.template:
+- name: "config: Enable sudo for `sssd_allow_groups`"
+  ansible.builtin.blockinfile:
     backup: true
-    src: "./sudoers.j2"
-    dest: "{{ sssd_sudoers_config_snippet }}"
-    mode: 0440
+    path: "{{ system_sudoers_config_file }}"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: origin={{ origin }}"
+    insertafter: EOF
+    block: |
+      {% for a in sssd_allow_groups %}
+      %{{ a | replace(" ","\ ") }} ALL=(ALL:ALL) ALL
+      {% endfor %}
     validate: /usr/sbin/visudo -csf %s
+  when:
+  - _system_sudoers_config_file['stat']['exists']
 
 - name: "config: Enable SSSD service"
   ansible.builtin.service:
-    name: "{{ sssd_service }}"
+    name: "{{ sssd_service_name }}"
     enabled: yes
   when: ansible_check_mode == false
 ...

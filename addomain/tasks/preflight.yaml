@@ -1,17 +1,17 @@
 ---
-- name: "preflight: Is `join_user` defined?"
+- name: "preflight: Is `addomain_join_user` defined?"
   assert:
     that:
-      - join_user is defined
-    fail_msg: "`join_user` must be provided."
+      - addomain_join_user is defined
+    fail_msg: "`addomain_join_user` must be provided."
   delegate_to: localhost
   run_once: true
 
-- name: "preflight: Is `join_pass` defined?"
+- name: "preflight: Is `addomain_join_pass` defined?"
   assert:
     that:
-      - join_pass is defined
-    fail_msg: "`join_pass` must be provided."
+      - addomain_join_pass is defined
+    fail_msg: "`addomain_join_pass` must be provided."
   delegate_to: localhost
   run_once: true
 
@@ -31,18 +31,60 @@
   delegate_to: localhost
   run_once: true
 
-- name: "preflight: Does `{{ samba_config_directory }}` exist?"
-  stat:
-    path: "{{ samba_config_directory }}"
-  register: stat_samba_config_directory
+- name: "preflight: Initialize `pam_mkhomedir_module_name` with default value"
+  ansible.builtin.set_fact:
+    pam_mkhomedir_module_name: "{{ default_pam_mkhomedir_module_name }}"
+  when: pam_mkhomedir_module_name is undefined
 
-- name: "preflight: Does `{{ krb5_config_directory }}` exist?"
-  stat:
-    path: "{{ krb5_config_directory }}"
-  register: stat_krb5_config_directory
+- name: "preflight: Initialize `system_krb5_config_file` with default value"
+  ansible.builtin.set_fact:
+    system_krb5_config_file: "{{ default_system_krb5_config_file }}"
+  when: system_krb5_config_file is undefined
 
-- name: "preflight: Does `{{ sssd_config_directory }}` exist?"
+- name: "preflight: Initialize `system_krb5_config_directory` with default value"
+  ansible.builtin.set_fact:
+    system_krb5_config_directory: "{{ default_system_krb5_config_directory }}"
+  when: system_krb5_config_directory is undefined
+
+- name: "preflight: Register `_system_krb5_config_directory`"
   stat:
-    path: "{{ sssd_config_directory }}"
-  register: stat_sssd_config_directory
+    path: "{{ system_krb5_config_directory }}"
+  register: _system_krb5_config_directory
+
+- name: "preflight: Initialize `system_samba_config_file` with default value"
+  ansible.builtin.set_fact:
+    system_samba_config_file: "{{ default_system_samba_config_file }}"
+  when: system_samba_config_file is undefined
+
+- name: "preflight: Initialize `system_samba_config_directory` with default value"
+  ansible.builtin.set_fact:
+    system_samba_config_directory: "{{ default_system_samba_config_directory }}"
+  when: system_samba_config_directory is undefined
+
+- name: "preflight: Register `_system_samba_config_directory`"
+  stat:
+    path: "{{ system_samba_config_directory }}"
+  register: _system_samba_config_directory
+
+- name: "preflight: Initialize `sssd_service_name` with default value"
+  ansible.builtin.set_fact:
+    sssd_service_name: "{{ default_sssd_service_name }}"
+  when: sssd_service_name is undefined
+
+- name: "preflight: Initialize `system_sssd_config_file` with default value"
+  ansible.builtin.set_fact:
+    system_sssd_config_file: "{{ default_system_sssd_config_file }}"
+  when: system_sssd_config_file is undefined
+
+- name: "preflight: Initialize `system_sssd_config_directory` with default value"
+  ansible.builtin.set_fact:
+    system_sssd_config_directory: "{{ default_system_sssd_config_directory }}"
+  when: system_sssd_config_directory is undefined
+
+- name: "preflight: Register `_system_sssd_config_directory`"
+  stat:
+    path: "{{ system_sssd_config_directory }}"
+  register: _system_sssd_config_directory
 ...
+
+

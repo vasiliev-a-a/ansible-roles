@@ -1,9 +1,10 @@
 ---
-- import_tasks: preflight.yaml
-
 - name: "Include distribution specific variables"
   ansible.builtin.include_vars:
     file: "{{ ansible_distribution | lower }}.yaml"
+  tags: [always]
+
+- import_tasks: preflight.yaml
   tags: [always]
 
 - import_tasks: packages.yaml
