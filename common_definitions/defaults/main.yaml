@@ -1,3 +1,4 @@
 ---
-snippet_name: "{% if snippet_prefix is defined %}{{ snippet_prefix }}-{% endif%}{{ ansible_role_name | default('ansible')}}"
+origin_label: "{{ ansible_role_name | default('ansible')}}"
+origin: "{% if origin_prefix is defined %}{{ origin_prefix }}-{% endif%}{{ origin_label }}"
 ...

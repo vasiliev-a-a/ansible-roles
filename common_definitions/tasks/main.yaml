@@ -4,6 +4,20 @@
     file: "{{ ansible_distribution | lower }}.yaml"
   tags: [always]
 
+- name: "Reveal `origin`"
+  ansible.builtin.debug:
+    msg: "origin_prefix: {{ origin_prefix | default('undefined') }}, origin_label: {{ origin_label }}, playbok_origin: {{ origin }}"
+
+- name: "Initialize `system_logrotate_config_file` with default value"
+  ansible.builtin.set_fact:
+    system_logrotate_config_file: "{{ default_system_logrotate_config_file }}"
+  when: system_logrotate_config_file is undefined
+
+- name: "Initialize `system_logrotate_config_directory` with default value"
+  ansible.builtin.set_fact:
+    system_logrotate_config_directory: "{{ default_system_logrotate_config_directory }}"
+  when: system_logrotate_config_directory is undefined
+
 - name: "Initialize `pam_common_session_file` with default value"
   ansible.builtin.set_fact:
     pam_common_session_file: "{{ default_pam_common_session_file }}"
@@ -14,19 +28,66 @@
     rsyslog_service_name: "{{ default_rsyslog_service_name }}"
   when: rsyslog_service_name is undefined
 
-- name: "Initialize `sshd_config_file` with default value"
+- name: "Initialize `system_rsyslog_config_file` with default value"
   ansible.builtin.set_fact:
-    sshd_config_file: "{{ default_sshd_config_file }}"
-  when: sshd_config_file is undefined
+    system_rsyslog_config_file: "{{ default_system_rsyslog_config_file }}"
+  when: system_rsyslog_config_file is undefined
+
+- name: "Initialize `system_rsyslog_config_directory` with default value"
+  ansible.builtin.set_fact:
+    system_rsyslog_config_directory: "{{ default_system_rsyslog_config_directory }}"
+  when: system_rsyslog_config_directory is undefined
 
 - name: "Initialize `sshd_service_name` with default value"
   ansible.builtin.set_fact:
     sshd_service_name: "{{ default_sshd_service_name }}"
   when: sshd_service_name is undefined
 
-- name: "Reveal `snippet_name`"
-  ansible.builtin.assert:
-    that: snippet_prefix is defined
-    success_msg: "snippet_prefix: {{ snippet_prefix }}, snippet_name: {{ snippet_name }}"
-    fail_msg: "snippet_prefix: undefined, snippet_name: {{ snippet_name }}"
+- name: "Initialize `system_sshd_config_file` with default value"
+  ansible.builtin.set_fact:
+    system_sshd_config_file: "{{ default_system_sshd_config_file }}"
+  when: system_sshd_config_file is undefined
+
+- name: "Initialize `system_sudoers_config_file` with default value"
+  ansible.builtin.set_fact:
+    system_sudoers_config_file: "{{ default_system_sudoers_config_file }}"
+  when: system_sudoers_config_file is undefined
+
+- name: "Initialize `system_sudoers_config_directory` with default value"
+  ansible.builtin.set_fact:
+    system_sudoers_config_directory: "{{ default_system_sudoers_config_directory }}"
+  when: system_sudoers_config_directory is undefined
+
+- name: "Register `_system_logrotate_config_file`"
+  stat:
+    path: "{{ system_logrotate_config_file }}"
+  register: _system_logrotate_config_file
+
+- name: "Register `_system_logrotate_config_directory`"
+  stat:
+    path: "{{ system_logrotate_config_directory }}"
+  register: _system_logrotate_config_directory
+  when: _system_logrotate_config_file['stat']['exists']
+
+- name: "Register `_system_rsyslog_config_file`"
+  stat:
+    path: "{{ system_rsyslog_config_file }}"
+  register: _system_rsyslog_config_file
+
+- name: "Register `_system_rsyslog_config_directory`"
+  stat:
+    path: "{{ system_rsyslog_config_directory }}"
+  register: _system_rsyslog_config_directory
+  when: _system_rsyslog_config_file['stat']['exists']
+
+- name: "Register `_system_sudoers_config_file`"
+  stat:
+    path: "{{ system_sudoers_config_file }}"
+  register: _system_sudoers_config_file
+
+- name: "Register `_system_sudoers_config_directory`"
+  stat:
+    path: "{{ system_sudoers_config_directory }}"
+  register: _system_sudoers_config_directory
+  when: _system_sudoers_config_file['stat']['exists']
 ...
