@@ -1,8 +1,0 @@
----
-system_logrotate_config_file: "/etc/logrotate.conf"
-system_logrotate_config_directory: "/etc/logrotate.d"
-system_rsyslog_config_file: "/etc/rsyslog.conf"
-system_rsyslog_config_directory: "/etc/rsyslog.d"
-system_sudoers_config_file: "/etc/sudoers"
-system_sudoers_config_directory: "/etc/sudoers.d"
-...

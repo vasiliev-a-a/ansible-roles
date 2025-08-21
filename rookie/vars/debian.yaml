@@ -1,5 +1,4 @@
 ---
 packages_install:
   - "rsync"
-pam_umask_module: "pam_umask.so"
 ...

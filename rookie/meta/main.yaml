@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   description: |
-    This role brings new hosts under control of Ansible.
+    This role brings new hosts under the control of Ansible.
 dependencies:
-- role: defaults
+- role: common_variables
 ...

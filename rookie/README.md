@@ -1,55 +1,8 @@
-# Role `rookie`
-
-This role brings new hosts (rookies) under control of Ansible:
-
-1. It installs **rsync** package to satisfy _ANSIBLE.POSIX.SYNCHRONIZE_ module.
-2. It enables pam **umask** module, so umask in account GECOS field gets respected.
-3. It creates a user account for management purposes:
-
-   - The user's password will be locked.
-   - The user's _~/.ssh/authorized_keys_ will be populated to allow public key authentication.
-   - The user will be allowed to login with ssh only from `ansible_controller_addresses`.
-   - The user will be permitted to **sudo** any command without password prompt.
+# Examples
 
 ___
 
-## Limitations
-
-- Only Debian-based OS support is implementend at the moment.
-
-___
-
-## Dependencies
-
-- `defaults` - to import common variables and handlers.
-
-___
-
-## Role Content
-
-`ansible_controller_addresses` defines a list of hosts, from which `ansible_account_user` is allowed to connect. If not provided explicitly, it will be initialized to ipv4 addresses of the host currently executing the playbook during the preflight task.
-
-- _defaults/main.yaml_:
-
-  | Variable | Default | Description |
-  |:---------|:-------:|:------------|
-  | `ansible_account_group` | `users` | Primary group of the management account. |
-  | `ansible_account_home` | `/home/{{ ansible_account_user }}` | Home directory of the management account. |
-  | `ansible_account_uid` | `1991` | UID of the management account. |
-  | `ansible_account_user` | `ansible` | Username of the management account. |
-  | `ansible_become_pass` | `{{ ansible_password}}` | Password that is used to elevate privileges. |
-  | `authorized_keys_extra` | `[]` | These ones will be included into _~/.ssh/authorized_keys_ in addition to any of _~/.ssh/id\_{dsa,rsa,ecdsa,ed25519}.pub_ of the user executing the playbook. |
-
-- _vars/debian.yaml_:
-
-  | Variable | Default | Description |
-  |:---------|:-------:|:------------|
-  | `packages_install` | `[rsync]` | List of packages that this role will install. |
-  | `pam_umask_module` | `pam_umask.so` | Identity of the **umask** PAM module. |
-
-___
-
-## Example Playbook
+## Credentials in the playbook
 
 ```yaml
 ---
@@ -63,7 +16,33 @@ ___
       ansible_controller_addresses:
       - "172.16.1.10"
       - "host.323.pri"
-      authorized_keys_extra:
+      ansible_authorized_keys_extra:
+      - "<boss_key>"
+      - "<my_key>"
+      - "<team_key>"
+...
+```
+
+___
+
+## Prompt for credentials
+
+```yaml
+---
+- name: "Prepare new nodes to be managed by Ansible"
+  hosts: newcommers
+  vars_prompt:
+  - name: ansible_user
+    prompt: "User with sudo capabilities on target hosts"
+    private: no
+  - name: ansible_password
+    prompt: "Password for the specified username"
+  roles:
+    - role: rookie
+      ansible_controller_addresses:
+      - "172.16.1.10"
+      - "host.323.pri"
+      ansible_authorized_keys_extra:
       - "<boss_key>"
       - "<my_key>"
       - "<team_key>"
