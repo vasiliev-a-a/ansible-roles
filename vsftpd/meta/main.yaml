@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   description: |
-    This role deploys FTP server powered by vsftpd.
+    This role deploys FTP server powered by `vsftpd`.
 dependencies:
-- role: defaults
+- role: common_variables
 ...

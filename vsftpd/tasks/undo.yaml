@@ -18,33 +18,33 @@
     path: "{{ vsftpd_config_directory }}"
     state: absent
 
-- name: "undo: Delete logrotate configuration snippet"
+- name: "undo: Delete logrotate configuration file"
   ansible.builtin.file:
-    path: "{{ vsftpd_logrotate_config_snippet }}"
+    path: "{{ vsftpd_logrotate_config_file }}"
     state: absent
 
-- name: "undo: Delete rsyslog configuration snippet"
+- name: "undo: Delete rsyslog configuration file"
   ansible.builtin.file:
-    path: "{{ vsftpd_rsyslog_config_snippet }}"
+    path: "{{ vsftpd_rsyslog_config_file }}"
     state: absent
 
-- name: "undo: Unset Chroot and SFTP for members of {{ ftp_group['name'] }}"
+- name: "undo: Unset Chroot and SFTP for members of {{ ftp_server_group['name'] }}"
   ansible.builtin.blockinfile:
     backup: true
-    marker: "# {mark} ANSIBLE MANAGED BLOCK: origin={{ snippet_name }}"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: origin={{ origin }}"
     state: absent
-    path: "/etc/ssh/sshd_config"
+    path: "{{ system_sshd_config_file }}"
   notify: "restart sshd"
 
-- name: "undo: Remove `{{ ftp_user['name'] }}` account"
+- name: "undo: Remove `{{ ftp_server_user['name'] }}` account"
   ansible.builtin.user:
-    name: "{{ ftp_user['name'] }}"
+    name: "{{ ftp_server_user['name'] }}"
     state: absent
     force: true
 
-- name: "undo: Remove `{{ ftp_group['name'] }}` group"
+- name: "undo: Remove `{{ ftp_server_group['name'] }}` group"
   ansible.builtin.group:
-    name: "{{ ftp_group['name'] }}"
+    name: "{{ ftp_server_group['name'] }}"
     state: absent
 
 - name: "undo: Remove accounts of `ftp_users`"

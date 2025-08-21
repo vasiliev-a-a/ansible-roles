@@ -2,6 +2,6 @@
 {{ vsftpd_rsyslog_extra }}
 {% endif %}
 :programname, startswith, "vsftpd" {
-  {{ vsftpd_log_file }}
+  {{ vsftpd_option_vsftpd_log_file }}
   stop
 }

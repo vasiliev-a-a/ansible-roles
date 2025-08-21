@@ -5,8 +5,7 @@
   tags: [always]
   
 - import_tasks: preflight.yaml
-  delegate_to: localhost
-  run_once: true
+  tags: [always]
 
 - import_tasks: packages.yaml
   become: true

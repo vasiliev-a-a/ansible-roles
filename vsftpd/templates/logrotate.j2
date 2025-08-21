@@ -1,7 +1,9 @@
-{{ vsftpd_log_file }} {{ vsftpd_xferlog_file }} {
+{{ vsftpd_option_vsftpd_log_file }}
+{{ vsftpd_option_xferlog_file }}
+{
 	sharedscripts
         postrotate
-                /usr/bin/systemctl reload {{ vsftpd_service }}
+                /usr/bin/systemctl reload {{ vsftpd_service_name }}
 		/usr/lib/rsyslog/rsyslog-rotate
         endscript
 }

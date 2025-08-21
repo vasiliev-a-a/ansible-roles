@@ -3,6 +3,8 @@
   assert:
     that: ftp_users is defined
     fail_msg: "Users of ftp service must be defined in the `ftp_users` list."
+  delegate_to: localhost
+  run_once: true
 
 - name: "preflight: Is `ftp_users` a list?"
   assert:
@@ -11,6 +13,8 @@
       - ( ftp_users is string ) is false
     fail_msg: "`ftp_users` must be defined as a list, even if it contains a single element."
   when: ftp_users is defined
+  delegate_to: localhost
+  run_once: true
 
 - name: "preflight: Are elements of the `ftp_users` have valid format?"
   assert:
@@ -23,7 +27,11 @@
       - item['role'] in ['user','admin']
     fail_msg: "`{{ item }}` has wrong format. Each user must be defined as a dictionary with the `name`, `id`, `password` and `role` fileds. `role` must be one of ['user', 'admin']."
   loop: "{{ ftp_users }}"
-  when: ftp_users is defined
+  when:
+    - ftp_users is defined
+    - (ftp_users | count()) > 0
+  delegate_to: localhost
+  run_once: true
 
 - name: "preflight: Are elements of the `ftp_users` unique?"
   assert:
@@ -31,5 +39,19 @@
       - (ftp_users | map(attribute='name') | unique() | count()) == (ftp_users | map(attribute='name') | count())
       - (ftp_users | map(attribute='id') | unique() | count()) == (ftp_users | map(attribute='id') | count())
     fail_msg: "`ftp_users` contains elements with non-unique values of `id` or `name` fields"
-  when: ftp_users is defined
+  when:
+    - ftp_users is defined
+    - (ftp_users | count()) > 0
+  delegate_to: localhost
+  run_once: true
+
+- name: "preflight: Initialize `pam_umask_module_name` with default value"
+  ansible.builtin.set_fact:
+    pam_umask_module_name: "{{ default_pam_umask_module_name }}"
+  when: pam_umask_module_name is undefined
+
+- name: "preflight: Initialize `vsftpd_service_name` with default value"
+  ansible.builtin.set_fact:
+    vsftpd_service_name: "{{ default_vsftpd_service_name }}"
+  when: vsftpd_service_name is undefined
 ...

@@ -2,13 +2,13 @@
 - name: "configuration: Create SSL certificate"
   ansible.builtin.copy:
     backup: true
-    content: "{{ vsftpd_rsa_cert }}"
-    dest: "{{ vsftpd_rsa_cert_file }}"
+    content: "{{ vsftpd_rsa_cert_file }}"
+    dest: "{{ vsftpd_option_rsa_cert_file }}"
     mode: "0640"
     validate: /usr/bin/openssl x509 -noout -in %s
   when:
-    - vsftpd_rsa_cert is defined
     - vsftpd_rsa_cert_file is defined
+    - vsftpd_option_rsa_cert_file is defined
   notify: "restart vsftpd"
   register: ssl_result
   ignore_errors: true
@@ -21,37 +21,40 @@
     mode: "0640"
   notify: "restart vsftpd"
 
-- name: "configuration: Generate per user configuration snippets"
+- name: "configuration: Generate per user configuration files"
   ansible.builtin.copy:
     backup: true
     content: |
-      local_root={{ ftp_root }}/{{ item['name'] }}
+      local_root={{ ftp_server_root }}/{{ item['name'] }}
     dest: "{{ vsftpd_config_directory }}/{{ item['name'] }}"
     mode: "0640"
   loop: "{{ ftp_users | selectattr('role','equalto','user') }}"
+  when:
+    - ftp_users is defined
+    - (ftp_users | count()) > 0
 
-- name: "configuration: Create logrotate configuration snippet"
+- name: "configuration: Create logrotate configuration file"
   ansible.builtin.template:
     backup: true
     src: "./logrotate.j2"
-    dest: "{{ vsftpd_logrotate_config_snippet }}"
+    dest: "{{ vsftpd_logrotate_config_file }}"
   when:
-  - stat_logrotate_config_file['stat']['exists']
-  - stat_logrotate_config_directory['stat']['exists']
+  - _system_logrotate_config_file['stat']['exists']
+  - _system_logrotate_config_directory['stat']['exists']
 
-- name: "configuration: Create rsyslog configuration snippet"
+- name: "configuration: Create rsyslog configuration file"
   ansible.builtin.template:
     backup: true
     src: "./rsyslog.j2"
-    dest: "{{ vsftpd_rsyslog_config_snippet }}"
+    dest: "{{ vsftpd_rsyslog_config_file }}"
   notify: "restart rsyslog"
   when:
-  - stat_rsyslog_config_file['stat']['exists']
-  - stat_rsyslog_config_directory['stat']['exists']
+  - _system_rsyslog_config_file['stat']['exists']
+  - _system_rsyslog_config_directory['stat']['exists']
 
 - name: "configuration: Enable `vsftpd` service"
   ansible.builtin.service:
-    name: "{{ vsftpd_service }}"
+    name: "{{ vsftpd_service_name }}"
     enabled: true
   when: ansible_check_mode == false
 ...
