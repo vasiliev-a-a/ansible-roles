@@ -1,6 +1,6 @@
 ---
 galaxy_info:
   description: |
-    Common variables definitions.
+    This role initializes common variables.
 dependencies: []
 ...
