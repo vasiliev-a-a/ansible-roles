@@ -1,5 +1,5 @@
 ---
-- name: "packages: APT: Setup trusted GPG keys"
+- name: "packages: APT: Setup Zabbix trusted GPG keys"
   ansible.builtin.copy:
     backup: true
     src: "{{ item }}"
@@ -7,9 +7,9 @@
     mode: "0644"
   loop: "{{ lookup('fileglob', 'apt_trusted_gpg_d/*', wantlist=True) }}"
 
-- name: "packages: APT: Setup repository"
+- name: "packages: APT: Setup Zabbix repository"
   block:
-  - name: "packages: APT: Write repository file"
+  - name: "packages: APT: Write a repository file"
     ansible.builtin.template:
       backup: true
       src: apt_source.j2

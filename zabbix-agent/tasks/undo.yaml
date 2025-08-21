@@ -20,28 +20,28 @@
 
 - name: "undo: Delete configuration root"
   ansible.builtin.file:
-    dest: "{{ zabbix_agent_config_root }}"
+    dest: "{{ zabbix_config_direcotry }}"
     state: absent
 
-- name: "undo: Delete logrotate configuration snippet"
+- name: "undo: Delete logrotate configuration file"
   ansible.builtin.file:
-    dest: "{{ zabbix_agent_logrotate_config_snippet }}"
+    dest: "{{ zabbix_agent_logrotate_config_file }}"
     state: absent
 
-- name: "undo: Delete sudoers configuration snippet"
-  ansible.builtin.file:
-    dest: "{{ zabbix_agent_sudoers_config_snippet }}"
+- name: "undo: Remove Zabbix Agent sudo configuration block"
+  ansible.builtin.blockinfile:
+    backup: true
+    path: "{{ system_sudoers_config_file }}"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: origin={{ origin }}"
     state: absent
+    validate: /usr/sbin/visudo -csf %s
+  when:
+  - _system_sudoers_config_file['stat']['exists']
 
 - name: "undo: Remove Zabbix Agent user account"
   ansible.builtin.user:
-    name: "{{ zabbix_agent_user }}"
+    name: "{{ zabbix_agent_option_user }}"
     state: absent
     remove: true
     force: true
-
-- name: "undo: Remove Zabbix Agent user group"
-  ansible.builtin.group:
-    name: "{{ zabbix_agent_group }}"
-    state: absent
 ...

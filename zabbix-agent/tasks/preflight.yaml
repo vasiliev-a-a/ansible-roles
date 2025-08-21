@@ -1,14 +1,44 @@
 ---
-- name: "preflight: Is `zabbix_agent_server` defined?"
+- name: "preflight: Is `zabbix_agent_option_server` defined?"
   assert:
-    that: zabbix_agent_server is defined
-    fail_msg: "The `zabbix_agent_server` must be defined in playbook/inventory."
+    that: zabbix_agent_option_server is defined
+    fail_msg: "The `zabbix_agent_option_server` must be defined in a playbook/inventory."
 
-- name: "preflight: Is `zabbix_agent_sudo_tools` a list?"
+- name: "preflight: Is `zabbix_agent_sudoers_cmnd_list` a list?"
   assert:
     that:
-      - zabbix_agent_sudo_tools is iterable
-      - ( zabbix_agent_sudo_tools is string ) is false
-    fail_msg: "`zabbix_agent_sudo_tools` must be defined as a list, even if it contains a single element."
-  when: zabbix_agent_sudo_tools is defined
+      - zabbix_agent_sudoers_cmnd_list is iterable
+      - ( zabbix_agent_sudoers_cmnd_list is string ) is false
+    fail_msg: "`zabbix_agent_sudoers_cmnd_list` must be defined as a list, even if it contains a single element."
+  when: zabbix_agent_sudoers_cmnd_list is defined
+
+- name: "preflight: Initialize `apt_sources_list_d` with default value"
+  ansible.builtin.set_fact:
+    apt_sources_list_d: "{{ default_apt_sources_list_d }}"
+  when: apt_sources_list_d is undefined
+
+- name: "preflight: Initialize `apt_trusted_gpg_d` with default value"
+  ansible.builtin.set_fact:
+    apt_trusted_gpg_d: "{{ default_apt_trusted_gpg_d }}"
+  when: apt_trusted_gpg_d is undefined
+
+- name: "preflight: Initialize `zabbix_agent_service_name` with default value"
+  ansible.builtin.set_fact:
+    zabbix_agent_service_name: "{{ default_zabbix_agent_service_name }}"
+  when: zabbix_agent_service_name is undefined
+
+- name: "preflight: Initialize `zabbix_config_direcotry` with default value"
+  ansible.builtin.set_fact:
+    zabbix_config_direcotry: "{{ default_zabbix_config_direcotry }}"
+  when: zabbix_config_direcotry is undefined
+
+- name: "preflight: Initialize `zabbix_agent_config_file` with default value"
+  ansible.builtin.set_fact:
+    zabbix_agent_config_file: "{{ default_zabbix_agent_config_file }}"
+  when: zabbix_agent_config_file is undefined
+
+- name: "preflight: Initialize `zabbix_azabbix_agent_config_directorygent_config_file` with default value"
+  ansible.builtin.set_fact:
+    zabbix_agent_config_directory: "{{ default_zabbix_agent_config_directory }}"
+  when: zabbix_agent_config_directory is undefined
 ...

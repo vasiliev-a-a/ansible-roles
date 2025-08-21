@@ -1,5 +1,13 @@
 ---
 packages_install:
   - 'zabbix-agent=1:{{ zabbix_agent_version }}.*'
-zabbix_agent_service: "zabbix-agent.service"
+
+default_apt_sources_list_d: "/etc/apt/sources.list.d"
+default_apt_trusted_gpg_d: "/etc/apt/trusted.gpg.d"
+
+default_zabbix_agent_service_name: "zabbix-agent.service"
+
+default_zabbix_config_direcotry: "/etc/zabbix"
+default_zabbix_agent_config_file: "{{ zabbix_config_direcotry }}/zabbix_agentd.conf"
+default_zabbix_agent_config_directory: "{{ zabbix_config_direcotry }}/zabbix_agentd.conf.d"
 ...

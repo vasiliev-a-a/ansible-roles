@@ -1,23 +1,19 @@
 ---
-- name: "configuration: Create Zabbix Agent user group"
-  ansible.builtin.group:
-    name: "{{ zabbix_agent_group }}"
-    state: "present"
-
-- name: "configuration: Create Zabbix Agent user account"
+- name: "configuration: Create an account to be used by Zabbix Agent"
   ansible.builtin.user:
-    name: "{{ zabbix_agent_user }}"
+    name: "{{ zabbix_agent_option_user }}"
     state: "present"
     create_home: false
-    group: "{{ zabbix_agent_group }}"
     password_lock: true
+  register:
+    _zabbix_agent_user
 
 - name: "configuration: Ensure that the log path exists"
   ansible.builtin.file:
-    path: "{{ zabbix_agent_log_file | dirname }}"
+    path: "{{ zabbix_agent_option_log_file | dirname }}"
     mode: 0755
-    owner: "{{ zabbix_agent_user }}"
-    group: "{{ zabbix_agent_group }}"
+    owner: "{{ zabbix_agent_option_user }}"
+    group: "{{ _zabbix_agent_user['group'] }}"
     state: directory
   when: ansible_check_mode == false
 
@@ -39,42 +35,43 @@
     regexp: "^[Ii]nclude={{ zabbix_agent_config_directory }}/*.conf"
     validate: "zabbix_agentd -c %s -t agent.hostname"
 
-- name: "configuration: Create configuration snippet"
+- name: "configuration: Create role configuration file"
   ansible.builtin.template:
     backup: true
-    dest: "{{ zabbix_agent_config_snippet }}"
+    dest: "{{ zabbix_agent_role_config_file }}"
     src: "config.j2"
     mode: "0644"
     validate: "zabbix_agentd -c %s -t agent.hostname"
   notify: "restart zabbix-agent"
 
-- name: "configuration: Create logrotate configuration snippet"
+- name: "configuration: Create logrotate configuration file"
   ansible.builtin.template:
     backup: true
     src: "logrotate.j2"
-    dest: "{{ zabbix_agent_logrotate_config_snippet }}"
+    dest: "{{ zabbix_agent_logrotate_config_file }}"
     mode: "0644"
     validate: "logrotate -d %s"
   when:
-  - stat_logrotate_config_file['stat']['exists']
-  - stat_logrotate_config_directory['stat']['exists']
+  - _system_logrotate_config_file['stat']['exists']
+  - _system_logrotate_config_directory['stat']['exists']
 
-- name: "configuration: Create sudoers configuration snippet"
-  ansible.builtin.template:
+- name: "sudoers: Enable sudo for Zabbix Agent user"
+  ansible.builtin.blockinfile:
     backup: true
-    src: "sudoers.j2"
-    dest: "{{ zabbix_agent_sudoers_config_snippet }}"
-    owner: "root"
-    group: "root"
-    mode: 0440
+    path: "{{ system_sudoers_config_file }}"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: origin={{ origin }}"
+    insertafter: EOF
+    block: |
+      Defaults: {{ zabbix_agent_option_user }} !requiretty
+      Cmnd_Alias ZABBIX_AGENT_TOOLS = {{ zabbix_agent_sudoers_cmnd_list | join(',') }}
+      {{ zabbix_agent_option_user }} ALL=(ALL) NOPASSWD: ZABBIX_AGENT_TOOLS
     validate: /usr/sbin/visudo -csf %s
   when:
   - zabbix_agent_remote_commands
-  - stat_sudoers_config_file['stat']['exists']
-  - stat_sudoers_config_directory['stat']['exists']
+  - _system_sudoers_config_file['stat']['exists']
 
 - name: "configuration: Enable Zabbix Agent service"
   ansible.builtin.service:
-    name: "{{ zabbix_agent_service }}"
+    name: "{{ zabbix_agent_service_name }}"
     enabled: true
 ...

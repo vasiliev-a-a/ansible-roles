@@ -5,6 +5,7 @@
   tags: [always]
 
 - import_tasks: preflight.yaml
+  tags: [always]
 
 - import_tasks: packages.yaml
   become: true
