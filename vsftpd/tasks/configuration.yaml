@@ -10,13 +10,13 @@
     - vsftpd_rsa_cert_file is defined
     - vsftpd_option_rsa_cert_file is defined
   notify: "restart vsftpd"
-  register: ssl_result
+  register: _ssl_result
   ignore_errors: true
 
 - name: "configuration: Generate vsFTPd service configuration"
   ansible.builtin.template:
     backup: true
-    src: "./configuration.j2"
+    src: "./vsftpd.j2"
     dest: "{{ vsftpd_config_file }}"
     mode: "0640"
   notify: "restart vsftpd"

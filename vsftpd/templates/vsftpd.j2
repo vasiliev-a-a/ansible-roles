@@ -14,7 +14,7 @@ guest_enable=NO
 local_enable=YES
 write_enable=YES
 local_umask=0007
-{% if ssl_result['failed'] is false %}
+{% if _ssl_result['failed'] is false %}
 force_local_logins_ssl=no
 force_local_data_ssl=no
 ssl_enable=yes

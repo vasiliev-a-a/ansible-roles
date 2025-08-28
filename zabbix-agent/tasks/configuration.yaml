@@ -39,7 +39,7 @@
   ansible.builtin.template:
     backup: true
     dest: "{{ zabbix_agent_role_config_file }}"
-    src: "config.j2"
+    src: "zabbix_agent.j2"
     mode: "0644"
     validate: "zabbix_agentd -c %s -t agent.hostname"
   notify: "restart zabbix-agent"
