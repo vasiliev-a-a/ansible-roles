@@ -41,7 +41,7 @@
     groups: "{{ ftp_server_group['name']}}"
     password: "{{ item['password'] | password_hash('sha512') }}"
     shell: "/bin/bash"
-    home: "{{ ftp_server_root }}/{{ item['name'] }}"
+    home: "{{ ftp_server_root }}/{{ item['name'] }}/.//"
     comment: ",,,,umask=0007"
     create_home: no
   loop: "{{ ftp_users | selectattr('role','equalto','user') }}"
@@ -57,7 +57,7 @@
     groups: "{{ ftp_users | map(attribute='name') | join(',') }},{{ ftp_server_group['name'] }}"
     password: "{{ item['password'] | password_hash('sha512') }}"
     shell: "/bin/bash"
-    home: "{{ ftp_server_root }}"
+    home: "{{ ftp_server_root }}/.//"
     comment: ",,,,umask=0007"
     create_home: no
   loop: "{{ ftp_users | selectattr('role','equalto','admin') }}"

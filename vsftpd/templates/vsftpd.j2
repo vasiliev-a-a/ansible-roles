@@ -15,13 +15,14 @@ local_enable=YES
 write_enable=YES
 local_umask=0007
 {% if _ssl_result['failed'] is false %}
-force_local_logins_ssl=no
-force_local_data_ssl=no
-ssl_enable=yes
+force_local_logins_ssl=NO
+force_local_data_ssl=NO
+ssl_enable=YES
 rsa_cert_file={{ vsftpd_option_rsa_cert_file }}
 {% endif %}
 allow_writeable_chroot=YES
 chroot_local_user=YES
+passwd_chroot_enable=YES
 local_root={{ ftp_server_root }}
 user_config_dir={{ vsftpd_config_directory }}
 text_userdb_names=YES

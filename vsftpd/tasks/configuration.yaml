@@ -21,18 +21,6 @@
     mode: "0640"
   notify: "restart vsftpd"
 
-- name: "configuration: Generate per user configuration files"
-  ansible.builtin.copy:
-    backup: true
-    content: |
-      local_root={{ ftp_server_root }}/{{ item['name'] }}
-    dest: "{{ vsftpd_config_directory }}/{{ item['name'] }}"
-    mode: "0640"
-  loop: "{{ ftp_users | selectattr('role','equalto','user') }}"
-  when:
-    - ftp_users is defined
-    - (ftp_users | count()) > 0
-
 - name: "configuration: Create logrotate configuration file"
   ansible.builtin.template:
     backup: true
