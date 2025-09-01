@@ -37,7 +37,7 @@
     zabbix_agent_config_file: "{{ default_zabbix_agent_config_file }}"
   when: zabbix_agent_config_file is undefined
 
-- name: "preflight: Initialize `zabbix_azabbix_agent_config_directorygent_config_file` with default value"
+- name: "preflight: Initialize `zabbix_agent_config_directory` with default value"
   ansible.builtin.set_fact:
     zabbix_agent_config_directory: "{{ default_zabbix_agent_config_directory }}"
   when: zabbix_agent_config_directory is undefined

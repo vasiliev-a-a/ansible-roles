@@ -1,5 +1,0 @@
-Defaults: {{ zabbix_agent_option_user }} !requiretty
-
-Cmnd_Alias ZABBIX_AGENT_TOOLS = {{ zabbix_agent_sudoers_cmnd_list | join(',') }}
-
-{{ zabbix_agent_option_user }} ALL=(ALL) NOPASSWD: ZABBIX_AGENT_TOOLS

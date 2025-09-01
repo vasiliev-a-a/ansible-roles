@@ -3,9 +3,10 @@
   ansible.builtin.copy:
     backup: true
     src: "{{ item }}"
-    dest: "{{ apt_trusted_gpg_d }}/"
+    dest: "{{ apt_trusted_gpg_d }}/{{ origin }}_{{ item.split('/')[-1] }}"
     mode: "0644"
   loop: "{{ lookup('fileglob', 'apt_trusted_gpg_d/*', wantlist=True) }}"
+  when: (zabbix_agent_release is defined) or (zabbix_agent_repo is defined)
 
 - name: "packages: APT: Setup Zabbix repository"
   block:
@@ -13,7 +14,7 @@
     ansible.builtin.template:
       backup: true
       src: apt_source.j2
-      dest: "{{ apt_sources_list_d }}/zabbix-{{ zabbix_agent_version }}.list"
+      dest: "{{ apt_sources_list_d }}/{{ origin }}.list"
       mode: "0644"
       validate: /usr/bin/apt-get -o dir::etc::sourceparts=/dev/null -o dir::etc::sourcelist=%s update
   rescue:
@@ -21,6 +22,7 @@
       ansible.builtin.debug:
         msg: |
           Could not update package cache with the provided repository configuration, thus it was not applied.
+  when: (zabbix_agent_release is defined) or (zabbix_agent_repo is defined)
 
 - name: "packages: APT: Install packages"
   ansible.builtin.apt:

@@ -50,7 +50,6 @@
     src: "logrotate.j2"
     dest: "{{ zabbix_agent_logrotate_config_file }}"
     mode: "0644"
-    validate: "logrotate -d %s"
   when:
   - _system_logrotate_config_file['stat']['exists']
   - _system_logrotate_config_directory['stat']['exists']
@@ -74,4 +73,5 @@
   ansible.builtin.service:
     name: "{{ zabbix_agent_service_name }}"
     enabled: true
+  when: ansible_check_mode == false
 ...

@@ -1,5 +1,4 @@
 ---
-zabbix_agent_version: "6.0"
 zabbix_agent_remote_commands: false
 
 zabbix_agent_logrotate_config_file_name: "zabbix-agent"
@@ -8,7 +7,6 @@ zabbix_agent_logrotate_config_file: "{{ system_logrotate_config_directory }}/{{ 
 zabbix_agent_role_config_file_name: "{{ origin }}"
 zabbix_agent_role_config_file: "{{ zabbix_agent_config_directory }}/{{ zabbix_agent_role_config_file_name }}.conf"
 zabbix_agent_role_config_extra: |
-
 
 zabbix_agent_option_debug_level: 3
 zabbix_agent_option_hostname: "{{ ansible_facts['hostname'] | upper }}"

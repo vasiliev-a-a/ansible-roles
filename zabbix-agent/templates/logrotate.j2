@@ -1,5 +1,5 @@
 {{ zabbix_agent_option_log_file }} {
-    create 0640 {{ zabbix_agent_option_user }} {{ _zabbix_agent_user['group'] }}
+    create 0640 {{ zabbix_agent_option_user }} {{ _zabbix_agent_user['group'] | default('nobody')}}
     sharedscripts
     postrotate
         [ -e {{ zabbix_agent_option_pid_file }} ] && invoke-rc.d zabbix-agent force-reload >/dev/null || true

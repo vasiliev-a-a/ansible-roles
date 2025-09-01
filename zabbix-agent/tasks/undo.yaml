@@ -9,18 +9,20 @@
       autoremove: true
   - name: "undo: APT: Remove repository file"
     ansible.builtin.file:
-      dest: "{{ apt_sources_list_d }}/zabbix-{{ zabbix_agent_version }}.list"
+      dest: "{{ apt_sources_list_d }}/{{ origin }}.list"
       state: absent
+    when: (zabbix_agent_release is defined) or (zabbix_agent_repo is defined)
   - name: "undo: APT: Remove trusted GPG keys"
     ansible.builtin.file:
-      dest: "{{ apt_trusted_gpg_d }}/{{ item.split('/')[-1] }}"
+      dest: "{{ apt_trusted_gpg_d }}/{{ origin }}_{{ item.split('/')[-1] }}"
       state: absent
     loop: "{{ lookup('fileglob', 'apt_trusted_gpg_d/*', wantlist=True) }}" 
+    when: (zabbix_agent_release is defined) or (zabbix_agent_repo is defined)
   when: (ansible_pkg_mgr | lower) == 'apt'
 
-- name: "undo: Delete configuration root"
+- name: "undo: Delete role configuration file"
   ansible.builtin.file:
-    dest: "{{ zabbix_config_direcotry }}"
+    dest: "{{ zabbix_agent_role_config_file }}"
     state: absent
 
 - name: "undo: Delete logrotate configuration file"
