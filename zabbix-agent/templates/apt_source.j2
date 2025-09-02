@@ -1,2 +1,0 @@
-{% if zabbix_agent_repo is defined %}{{ zabbix_agent_repo }}{% endif %}
-{% if (zabbix_agent_release is defined) and (zabbix_agent_repo is undefined) %}deb https://repo.zabbix.com/zabbix/{{ zabbix_agent_release }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }} main{% endif %}

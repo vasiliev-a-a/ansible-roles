@@ -17,7 +17,7 @@
     state: directory
   when: ansible_check_mode == false
 
-- name: "configuration: Ensure that the drop-in configuration directory exists"
+- name: "configuration: Ensure that drop-in configuration directory exists"
   ansible.builtin.file:
     path: "{{ zabbix_agent_config_directory }}"
     mode: 0755
@@ -25,7 +25,7 @@
     group: root
     state: directory
 
-- name: "configuration: Include the drop-in directory into the main configuration file"
+- name: "configuration: Include drop-in directory into the main configuration file"
   ansible.builtin.lineinfile:
     backup: true
     create: true

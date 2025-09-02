@@ -12,16 +12,6 @@
     fail_msg: "`zabbix_agent_sudoers_cmnd_list` must be defined as a list, even if it contains a single element."
   when: zabbix_agent_sudoers_cmnd_list is defined
 
-- name: "preflight: Initialize `apt_sources_list_d` with default value"
-  ansible.builtin.set_fact:
-    apt_sources_list_d: "{{ default_apt_sources_list_d }}"
-  when: apt_sources_list_d is undefined
-
-- name: "preflight: Initialize `apt_trusted_gpg_d` with default value"
-  ansible.builtin.set_fact:
-    apt_trusted_gpg_d: "{{ default_apt_trusted_gpg_d }}"
-  when: apt_trusted_gpg_d is undefined
-
 - name: "preflight: Initialize `zabbix_agent_service_name` with default value"
   ansible.builtin.set_fact:
     zabbix_agent_service_name: "{{ default_zabbix_agent_service_name }}"
