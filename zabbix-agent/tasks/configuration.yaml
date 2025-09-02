@@ -13,7 +13,7 @@
     path: "{{ zabbix_agent_option_log_file | dirname }}"
     mode: 0755
     owner: "{{ zabbix_agent_option_user }}"
-    group: "{{ _zabbix_agent_user['group'] }}"
+    group: "{{ _zabbix_agent_user['group'] | default(zabbix_agent_option_user) }}"
     state: directory
   when: ansible_check_mode == false
 

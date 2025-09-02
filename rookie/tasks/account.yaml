@@ -16,8 +16,8 @@
     path: "{{ ansible_account_home_dir }}/.ssh"
     state: directory
     mode: 0700
-    group: "{{ _ansible_user['group'] }}"
     owner: "{{ ansible_account_user_name }}"
+    group: "{{ _ansible_user['group'] | default(ansible_account_user_name) }}"
 
 - name: "account: Set up `~/.ssh/auhtorized_keys`"
   vars:
@@ -35,7 +35,7 @@
     insertafter: EOF
     create: true
     owner: "{{ ansible_account_user_name }}"
-    group: "{{ _ansible_user['group'] }}"
+    group: "{{ _ansible_user['group'] | default(ansible_account_user_name) }}"
     mode: 0600
     path: "{{ ansible_account_home_dir }}/.ssh/authorized_keys"
 ...
