@@ -1,9 +1,4 @@
 ---
-- name: "preflight: Is `zabbix_agent_option_server` defined?"
-  assert:
-    that: zabbix_agent_option_server is defined
-    fail_msg: "The `zabbix_agent_option_server` must be defined in a playbook/inventory."
-
 - name: "preflight: Is `zabbix_agent_sudoers_cmnd_list` a list?"
   assert:
     that:

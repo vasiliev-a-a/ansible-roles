@@ -30,6 +30,11 @@
     state: absent
     validate: "zabbix_agentd -c %s -t agent.hostname"
 
+- name: "undo: Delete main configuration file backups"
+  ansible.builtin.shell:
+    cmd: "rm {{ zabbix_agent_config_file }}.*~"
+    removes: "{{ zabbix_agent_config_file }}.*~"
+
 - name: "undo: Delete logrotate configuration file"
   ansible.builtin.file:
     dest: "{{ zabbix_agent_logrotate_config_file }}"

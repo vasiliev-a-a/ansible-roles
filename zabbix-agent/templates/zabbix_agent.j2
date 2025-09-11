@@ -1,16 +1,7 @@
 User={{ zabbix_agent_option_user }}
 PidFile={{ zabbix_agent_option_pid_file }}
 LogFile={{ zabbix_agent_option_log_file }}
-LogFileSize=0
-DebugLevel={{ zabbix_agent_option_debug_level }}
-Server={{ zabbix_agent_option_server }}
-Hostname={{ zabbix_agent_option_hostname }}
-ServerActive={{ zabbix_agent_option_server_active }}
-RefreshActiveChecks={{ zabbix_agent_option_refresh_active_checks }}
-{% if zabbix_agent_remote_commands %}
-AllowKey=system.run[*]
-{% else %}
-DenyKey=system.run[*]
-{% endif %}
-LogRemoteCommands={{ zabbix_agent_option_log_remote_commands }}
+
+# ↓ `zabbix_agent_role_config_extra` ↓
+
 {{ zabbix_agent_role_config_extra }}

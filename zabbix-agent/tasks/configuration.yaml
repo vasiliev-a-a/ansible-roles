@@ -66,7 +66,6 @@
       {{ zabbix_agent_option_user }} ALL=(ALL) NOPASSWD: ZABBIX_AGENT_TOOLS
     validate: /usr/sbin/visudo -csf %s
   when:
-  - zabbix_agent_remote_commands
   - _system_sudoers_config_file['stat']['exists']
 
 - name: "configuration: Enable Zabbix Agent service"
