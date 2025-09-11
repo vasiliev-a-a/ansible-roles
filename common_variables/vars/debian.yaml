@@ -12,5 +12,4 @@ default_sshd_service_name: "sshd"
 default_system_sshd_config_file: "/etc/ssh/sshd_config"
 
 default_system_sudoers_config_file: "/etc/sudoers"
-default_system_sudoers_config_directory: "/etc/sudoers.d"
 ...
