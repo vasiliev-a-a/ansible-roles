@@ -11,6 +11,7 @@ ___
   tasks:
   - debug:
       msg:
+      - "playbook_name: {{ playbook_name | default('undefined') }}"
       - "origin_label: {{ origin_label | default('undefined') }}"
       - "origin_prefix: {{ origin_prefix | default('undefined') }}"
       - "origin: {{ origin | default('undefined') }}"

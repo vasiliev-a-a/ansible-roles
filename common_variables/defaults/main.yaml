@@ -1,4 +1,5 @@
 ---
-origin_label: "{{ ansible_role_name | default('ansible') }}"
+playbook_name: "{{ (lookup('file', '/proc/self/cmdline') | regex_replace('\u0000',' ')).split() | select('match','^[\\w/-]*[.]y[a]?ml') | list | first | regex_replace('^(.+/)*(.+)[.]y[a]?ml','\\2') }}"
+origin_label: "{{ playbook_name | default('ansible') }}"
 origin: "{% if origin_prefix is defined %}{{ origin_prefix }}-{% endif%}{{ origin_label }}"
 ...
