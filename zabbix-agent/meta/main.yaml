@@ -1,7 +1,0 @@
----
-galaxy_info:
-  description: |
-    "This role installs and configures the Zabbix Agent on the target hosts."
-dependencies:
-- role: common_variables
-...

@@ -1,7 +1,0 @@
----
-ansible_account_home_dir: "/home/{{ ansible_account_user_name }}"
-ansible_account_uid: 1991
-ansible_account_user_name: "ansible"
-ansible_become_pass: "{{ ansible_password}}"
-ansible_authorized_keys_extra: []
-...

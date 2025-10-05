@@ -1,0 +1,14 @@
+---
+sssd_allow_groups:
+ - "Администраторы домена"
+ - "Domain Admins"
+
+sssd_krb5_config_file_name: "{{ origin }}"
+sssd_krb5_config_file: "{{ system_krb5_config_directory }}/{{ sssd_krb5_config_file_name }}"
+
+sssd_logrotate_config_file_name: "{{ origin }}"
+sssd_logrotate_config_file: "{{ system_logrotate_config_directory }}/{{ sssd_logrotate_config_file_name }}"
+
+sssd_samba_config_file_name: "{{ origin }}.conf"
+sssd_samba_config_file: "{{ system_samba_config_directory }}/{{ sssd_samba_config_file_name }}"
+...

@@ -1,0 +1,15 @@
+---
+default_system_logrotate_config_file: "/etc/logrotate.conf"
+default_system_logrotate_config_directory: "/etc/logrotate.d"
+
+default_pam_common_session_file: "/etc/pam.d/common-session"
+
+default_rsyslog_service_name: "rsyslog.service"
+default_system_rsyslog_config_file: "/etc/rsyslog.conf"
+default_system_rsyslog_config_directory: "/etc/rsyslog.d"
+
+default_sshd_service_name: "sshd.service"
+default_system_sshd_config_file: "/etc/ssh/sshd_config"
+
+default_system_sudoers_config_file: "/etc/sudoers"
+...

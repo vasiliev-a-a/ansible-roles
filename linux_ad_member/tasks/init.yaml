@@ -1,0 +1,94 @@
+---
+- name: "Include distribution specific variables"
+  ansible.builtin.include_vars:
+    file: "{{ ansible_distribution | lower }}.yaml"
+
+- name: "init: Is `ad_member_join_user` defined?"
+  assert:
+    that:
+      - ad_member_join_user is defined
+    fail_msg: "`ad_member_join_user` must be provided."
+  delegate_to: localhost
+  run_once: true
+
+- name: "init: Is `ad_member_join_pass` defined?"
+  assert:
+    that:
+      - ad_member_join_pass is defined
+    fail_msg: "`ad_member_join_pass` must be provided."
+  delegate_to: localhost
+  run_once: true
+
+- name: "init: Is `ansible_domain` defined?"
+  assert:
+    that:
+      - ansible_domain is defined
+      - ansible_domain is string
+    fail_msg: "`ansible_domain` is not defined. Host must be configured with FQDN of the target domain."
+
+- name: "init: Is `sssd_allow_groups` a list?"
+  assert:
+    that:
+      - sssd_allow_groups is iterable
+      - ( sssd_allow_groups is string ) is false
+    fail_msg: "`sssd_allow_groups` must be defined as a list of strings, even if it contains a single element."
+  delegate_to: localhost
+  run_once: true
+
+- name: "init: Initialize `pam_mkhomedir_module_name` with default value"
+  ansible.builtin.set_fact:
+    pam_mkhomedir_module_name: "{{ default_pam_mkhomedir_module_name }}"
+  when: pam_mkhomedir_module_name is undefined
+
+- name: "init: Initialize `system_krb5_config_file` with default value"
+  ansible.builtin.set_fact:
+    system_krb5_config_file: "{{ default_system_krb5_config_file }}"
+  when: system_krb5_config_file is undefined
+
+- name: "init: Initialize `system_krb5_config_directory` with default value"
+  ansible.builtin.set_fact:
+    system_krb5_config_directory: "{{ default_system_krb5_config_directory }}"
+  when: system_krb5_config_directory is undefined
+
+- name: "init: Register `_system_krb5_config_directory`"
+  stat:
+    path: "{{ system_krb5_config_directory }}"
+  register: _system_krb5_config_directory
+
+- name: "init: Initialize `system_samba_config_file` with default value"
+  ansible.builtin.set_fact:
+    system_samba_config_file: "{{ default_system_samba_config_file }}"
+  when: system_samba_config_file is undefined
+
+- name: "init: Initialize `system_samba_config_directory` with default value"
+  ansible.builtin.set_fact:
+    system_samba_config_directory: "{{ default_system_samba_config_directory }}"
+  when: system_samba_config_directory is undefined
+
+- name: "init: Register `_system_samba_config_directory`"
+  stat:
+    path: "{{ system_samba_config_directory }}"
+  register: _system_samba_config_directory
+
+- name: "init: Initialize `sssd_service_name` with default value"
+  ansible.builtin.set_fact:
+    sssd_service_name: "{{ default_sssd_service_name }}"
+  when: sssd_service_name is undefined
+
+- name: "init: Initialize `system_sssd_config_file` with default value"
+  ansible.builtin.set_fact:
+    system_sssd_config_file: "{{ default_system_sssd_config_file }}"
+  when: system_sssd_config_file is undefined
+
+- name: "init: Initialize `system_sssd_config_directory` with default value"
+  ansible.builtin.set_fact:
+    system_sssd_config_directory: "{{ default_system_sssd_config_directory }}"
+  when: system_sssd_config_directory is undefined
+
+- name: "init: Register `_system_sssd_config_directory`"
+  stat:
+    path: "{{ system_sssd_config_directory }}"
+  register: _system_sssd_config_directory
+...
+
+
