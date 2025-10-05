@@ -1,0 +1,161 @@
+---
+- name: "config: Enable PAM umask"
+  ansible.builtin.lineinfile:
+    backup: true
+    line: "session optional {{ pam_umask_module_name }}"
+    path: "{{ pam_common_session_file }}"
+    regexp: '^session[\ \t]+.*{{ pam_umask_module_name }}.*'
+
+- name: "config: Create {{ ftp_server_group['name'] }} group"
+  ansible.builtin.group:
+    name: "{{ ftp_server_group['name'] }}"
+    state: present
+    gid: "{{ ftp_server_group['gid'] }}"
+
+- name: "config: Create {{ ftp_server_user['name'] }} account"
+  ansible.builtin.user:
+    comment: "vsftpd service account"
+    name: "{{ ftp_server_user['name'] }}"
+    uid: "{{ ftp_server_user['uid'] }}"
+    group: "{{ ftp_server_group['name']}}"
+    password_lock: true
+    shell: "/bin/bash"
+    home: "{{ ftp_server_root }}"
+    create_home: no
+
+- name: "config: Create groups for `ftp_users`"
+  ansible.builtin.group:
+    name: "{{ item['name'] }}"
+    state: present
+    gid: "{{ item['id'] }}"
+  loop: "{{ ftp_users }}"
+  when:
+    - ftp_users is defined
+    - (ftp_users | count()) > 0
+
+- name: "config: Create regular accounts for `ftp_users`"
+  ansible.builtin.user:
+    name: "{{ item['name'] }}"
+    uid: "{{ item['id'] }}"
+    group: "{{ item['name']}}"
+    groups: "{{ ftp_server_group['name']}}"
+    password: "{{ item['password'] | password_hash('sha512') }}"
+    shell: "/bin/bash"
+    home: "{{ ftp_server_root }}/{{ item['name'] }}/.//"
+    comment: ",,,,umask=0007"
+    create_home: no
+  loop: "{{ ftp_users | selectattr('role','equalto','user') }}"
+  when:
+    - ftp_users is defined
+    - (ftp_users | count()) > 0
+
+- name: "config: Create admin accounts for `ftp_users`"
+  ansible.builtin.user:
+    name: "{{ item['name'] }}"
+    uid: "{{ item['id'] }}"
+    group: "{{ item['name']}}"
+    groups: "{{ ftp_users | map(attribute='name') | join(',') }},{{ ftp_server_group['name'] }}"
+    password: "{{ item['password'] | password_hash('sha512') }}"
+    shell: "/bin/bash"
+    home: "{{ ftp_server_root }}/.//"
+    comment: ",,,,umask=0007"
+    create_home: no
+  loop: "{{ ftp_users | selectattr('role','equalto','admin') }}"
+  when:
+    - ftp_users is defined
+    - (ftp_users | count()) > 0
+
+- name: "config: Create configuration directory"
+  ansible.builtin.file:
+    path: "{{ vsftpd_config_directory }}"
+    state: directory
+    mode: "0750"
+
+- name: "config: Create FTP root folder"
+  ansible.builtin.file:
+    path: "{{ ftp_server_root }}"
+    state: directory
+    mode: "0750"
+    owner: root
+    group: "{{ ftp_server_group['name'] }}"
+  when: ansible_check_mode == false
+
+- name: "config: Create per `ftp_users` chroot directory"
+  ansible.builtin.file:
+    path: "{{ ftp_server_root }}/{{ item['name'] }}"
+    state: directory
+    mode: "2770"
+    owner: "{{ item['name']}}"
+    group: "{{ item['name']}}"
+  loop: "{{ ftp_users | selectattr('role','equalto','user') }}"
+  when:
+    - ftp_users is defined
+    - (ftp_users | count()) > 0
+    - ansible_check_mode == false
+
+- name: "config: Enforce Chroot and SFTP for members of {{ ftp_server_group['name'] }}"
+  ansible.builtin.blockinfile:
+    backup: true
+    block: |
+      Match User {{ ftp_users | map(attribute='name') | join(',') }}
+      ChrootDirectory {{ ftp_server_root }}
+      ForceCommand internal-sftp -d /%u
+      AllowTcpForwarding no
+      AllowAgentForwarding no
+      X11Forwarding no
+      PermitTunnel no
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: origin={{ origin }}"
+    insertafter: EOF
+    path: "{{ system_sshd_config_file }}"
+  notify: "restart sshd"
+  when:
+    - ftp_users is defined
+    - (ftp_users | count()) > 0
+
+- name: "config: Create SSL certificate"
+  ansible.builtin.copy:
+    backup: true
+    content: "{{ vsftpd_rsa_cert_file }}"
+    dest: "{{ vsftpd_option_rsa_cert_file }}"
+    mode: "0640"
+    validate: /usr/bin/openssl x509 -noout -in %s
+  when:
+    - vsftpd_rsa_cert_file is defined
+    - vsftpd_option_rsa_cert_file is defined
+  notify: "restart vsftpd"
+  register: _ssl_result
+  ignore_errors: true
+
+- name: "config: Generate vsFTPd service configuration"
+  ansible.builtin.template:
+    backup: true
+    src: "./vsftpd.j2"
+    dest: "{{ vsftpd_config_file }}"
+    mode: "0640"
+  notify: "restart vsftpd"
+
+- name: "config: Create logrotate configuration file"
+  ansible.builtin.template:
+    backup: true
+    src: "./logrotate.j2"
+    dest: "{{ vsftpd_logrotate_config_file }}"
+  when:
+  - _system_logrotate_config_file['stat']['exists']
+  - _system_logrotate_config_directory['stat']['exists']
+
+- name: "config: Create rsyslog configuration file"
+  ansible.builtin.template:
+    backup: true
+    src: "./rsyslog.j2"
+    dest: "{{ vsftpd_rsyslog_config_file }}"
+  notify: "restart rsyslog"
+  when:
+  - _system_rsyslog_config_file['stat']['exists']
+  - _system_rsyslog_config_directory['stat']['exists']
+
+- name: "config: Enable `vsftpd` service"
+  ansible.builtin.service:
+    name: "{{ vsftpd_service_name }}"
+    enabled: true
+  when: ansible_check_mode == false
+...

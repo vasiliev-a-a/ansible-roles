@@ -1,0 +1,77 @@
+---
+- name: "init: Include distribution specific variables"
+  ansible.builtin.include_vars:
+    file: "{{ ansible_distribution | lower }}.yaml"
+
+- name: "init: Initialize `pam_common_session_file` with default value"
+  ansible.builtin.set_fact:
+    pam_common_session_file: "{{ default_pam_common_session_file }}"
+  when: pam_common_session_file is undefined
+
+- name: "init: Initialize `system_logrotate_config_file` with default value"
+  ansible.builtin.set_fact:
+    system_logrotate_config_file: "{{ default_system_logrotate_config_file }}"
+  when: system_logrotate_config_file is undefined
+
+- name: "init: Register `_system_logrotate_config_file`"
+  stat:
+    path: "{{ system_logrotate_config_file }}"
+  register: _system_logrotate_config_file
+
+- name: "init: Initialize `system_logrotate_config_directory` with default value"
+  ansible.builtin.set_fact:
+    system_logrotate_config_directory: "{{ default_system_logrotate_config_directory }}"
+  when: system_logrotate_config_directory is undefined
+
+- name: "init: Register `_system_logrotate_config_directory`"
+  stat:
+    path: "{{ system_logrotate_config_directory }}"
+  register: _system_logrotate_config_directory
+  when: _system_logrotate_config_file['stat']['exists']
+
+- name: "init: Initialize `rsyslog_service_name` with default value"
+  ansible.builtin.set_fact:
+    rsyslog_service_name: "init: {{ default_rsyslog_service_name }}"
+  when: rsyslog_service_name is undefined
+
+- name: "init: Initialize `system_rsyslog_config_file` with default value"
+  ansible.builtin.set_fact:
+    system_rsyslog_config_file: "{{ default_system_rsyslog_config_file }}"
+  when: system_rsyslog_config_file is undefined
+
+- name: "init: Register `_system_rsyslog_config_file`"
+  stat:
+    path: "{{ system_rsyslog_config_file }}"
+  register: _system_rsyslog_config_file
+
+- name: "init: Initialize `system_rsyslog_config_directory` with default value"
+  ansible.builtin.set_fact:
+    system_rsyslog_config_directory: "{{ default_system_rsyslog_config_directory }}"
+  when: system_rsyslog_config_directory is undefined
+
+- name: "init: Register `_system_rsyslog_config_directory`"
+  stat:
+    path: "{{ system_rsyslog_config_directory }}"
+  register: _system_rsyslog_config_directory
+  when: _system_rsyslog_config_file['stat']['exists']
+
+- name: "init: Initialize `sshd_service_name` with default value"
+  ansible.builtin.set_fact:
+    sshd_service_name: "init: {{ default_sshd_service_name }}"
+  when: sshd_service_name is undefined
+
+- name: "init: Initialize `system_sshd_config_file` with default value"
+  ansible.builtin.set_fact:
+    system_sshd_config_file: "{{ default_system_sshd_config_file }}"
+  when: system_sshd_config_file is undefined
+
+- name: "init: Initialize `system_sudoers_config_file` with default value"
+  ansible.builtin.set_fact:
+    system_sudoers_config_file: "{{ default_system_sudoers_config_file }}"
+  when: system_sudoers_config_file is undefined
+
+- name: "init: Register `_system_sudoers_config_file`"
+  stat:
+    path: "{{ system_sudoers_config_file }}"
+  register: _system_sudoers_config_file
+...

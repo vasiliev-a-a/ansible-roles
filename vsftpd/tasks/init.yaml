@@ -1,12 +1,16 @@
----
-- name: "preflight: Is `ftp_users` defined?"
+
+- name: "init: Include distribution specific variables"
+  ansible.builtin.include_vars:
+    file: "{{ ansible_distribution | lower }}.yaml"
+
+- name: "init: Is `ftp_users` defined?"
   assert:
     that: ftp_users is defined
     fail_msg: "Users of ftp service must be defined in the `ftp_users` list."
   delegate_to: localhost
   run_once: true
 
-- name: "preflight: Is `ftp_users` a list?"
+- name: "init: Is `ftp_users` a list?"
   assert:
     that:
       - ftp_users is iterable
@@ -16,7 +20,7 @@
   delegate_to: localhost
   run_once: true
 
-- name: "preflight: Are elements of the `ftp_users` have valid format?"
+- name: "init: Are elements of the `ftp_users` have valid format?"
   assert:
     that:
       - item is mapping
@@ -33,7 +37,7 @@
   delegate_to: localhost
   run_once: true
 
-- name: "preflight: Are elements of the `ftp_users` unique?"
+- name: "init: Are elements of the `ftp_users` unique?"
   assert:
     that:
       - (ftp_users | map(attribute='name') | unique() | count()) == (ftp_users | map(attribute='name') | count())
@@ -45,12 +49,12 @@
   delegate_to: localhost
   run_once: true
 
-- name: "preflight: Initialize `pam_umask_module_name` with default value"
+- name: "init: Initialize `pam_umask_module_name` with default value"
   ansible.builtin.set_fact:
     pam_umask_module_name: "{{ default_pam_umask_module_name }}"
   when: pam_umask_module_name is undefined
 
-- name: "preflight: Initialize `vsftpd_service_name` with default value"
+- name: "init: Initialize `vsftpd_service_name` with default value"
   ansible.builtin.set_fact:
     vsftpd_service_name: "{{ default_vsftpd_service_name }}"
   when: vsftpd_service_name is undefined

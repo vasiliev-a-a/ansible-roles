@@ -1,5 +1,9 @@
 ---
-- name: "preflight: Is `zabbix_agent_sudoers_cmnd_list` a list?"
+- name: "init: Include distribution specific variables"
+  ansible.builtin.include_vars:
+    file: "{{ ansible_distribution | lower }}.yaml"
+
+- name: "init: Is `zabbix_agent_sudoers_cmnd_list` a list?"
   assert:
     that:
       - zabbix_agent_sudoers_cmnd_list is iterable
@@ -7,22 +11,22 @@
     fail_msg: "`zabbix_agent_sudoers_cmnd_list` must be defined as a list, even if it contains a single element."
   when: zabbix_agent_sudoers_cmnd_list is defined
 
-- name: "preflight: Initialize `zabbix_agent_service_name` with default value"
+- name: "init: Initialize `zabbix_agent_service_name` with default value"
   ansible.builtin.set_fact:
     zabbix_agent_service_name: "{{ default_zabbix_agent_service_name }}"
   when: zabbix_agent_service_name is undefined
 
-- name: "preflight: Initialize `zabbix_config_direcotry` with default value"
+- name: "init: Initialize `zabbix_config_direcotry` with default value"
   ansible.builtin.set_fact:
     zabbix_config_direcotry: "{{ default_zabbix_config_direcotry }}"
   when: zabbix_config_direcotry is undefined
 
-- name: "preflight: Initialize `zabbix_agent_config_file` with default value"
+- name: "init: Initialize `zabbix_agent_config_file` with default value"
   ansible.builtin.set_fact:
     zabbix_agent_config_file: "{{ default_zabbix_agent_config_file }}"
   when: zabbix_agent_config_file is undefined
 
-- name: "preflight: Initialize `zabbix_agent_config_directory` with default value"
+- name: "init: Initialize `zabbix_agent_config_directory` with default value"
   ansible.builtin.set_fact:
     zabbix_agent_config_directory: "{{ default_zabbix_agent_config_directory }}"
   when: zabbix_agent_config_directory is undefined

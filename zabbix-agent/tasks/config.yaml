@@ -1,5 +1,5 @@
 ---
-- name: "configuration: Create an account to be used by Zabbix Agent"
+- name: "config: Create an account to be used by Zabbix Agent"
   ansible.builtin.user:
     name: "{{ zabbix_agent_option_user }}"
     state: "present"
@@ -8,7 +8,7 @@
   register:
     _zabbix_agent_user
 
-- name: "configuration: Ensure that the log path exists"
+- name: "config: Ensure that the log path exists"
   ansible.builtin.file:
     path: "{{ zabbix_agent_option_log_file | dirname }}"
     mode: 0755
@@ -17,7 +17,7 @@
     state: directory
   when: ansible_check_mode == false
 
-- name: "configuration: Ensure that drop-in configuration directory exists"
+- name: "config: Ensure that drop-in configuration directory exists"
   ansible.builtin.file:
     path: "{{ zabbix_agent_config_directory }}"
     mode: 0755
@@ -25,7 +25,7 @@
     group: root
     state: directory
 
-- name: "configuration: Include drop-in directory into the main configuration file"
+- name: "config: Include drop-in directory into the main configuration file"
   ansible.builtin.lineinfile:
     backup: true
     create: true
@@ -35,7 +35,7 @@
     regexp: "^[Ii]nclude={{ zabbix_agent_config_directory }}/*.conf"
     validate: "zabbix_agentd -c %s -t agent.hostname"
 
-- name: "configuration: Create role configuration file"
+- name: "config: Create role configuration file"
   ansible.builtin.template:
     backup: true
     dest: "{{ zabbix_agent_role_config_file }}"
@@ -44,7 +44,7 @@
     validate: "zabbix_agentd -c %s -t agent.hostname"
   notify: "restart zabbix-agent"
 
-- name: "configuration: Create logrotate configuration file"
+- name: "config: Create logrotate configuration file"
   ansible.builtin.template:
     backup: true
     src: "logrotate.j2"
@@ -68,7 +68,7 @@
   when:
   - _system_sudoers_config_file['stat']['exists']
 
-- name: "configuration: Enable Zabbix Agent service"
+- name: "config: Enable Zabbix Agent service"
   ansible.builtin.service:
     name: "{{ zabbix_agent_service_name }}"
     enabled: true

@@ -1,22 +1,10 @@
 ---
-- name: "Include distribution specific variables"
-  ansible.builtin.include_vars:
-    file: "{{ ansible_distribution | lower }}.yaml"
+- import_tasks: "init.yaml"
   tags: [always]
-  
-- import_tasks: "preflight.yaml"
-  delegate_to: localhost
-  run_once: true
 
-- import_tasks: "packages.yaml"
+- import_tasks: "install.yaml"
   become: true
 
-- import_tasks: "account.yaml"
-  become: true
-
-- import_tasks: "sshd.yaml"
-  become: true
-
-- import_tasks: "sudoers.yaml"
+- import_tasks: "config.yaml"
   become: true
 ...
